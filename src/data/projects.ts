@@ -27,8 +27,7 @@ export const projects: readonly Project[] = [
       "품질 검수",
     ],
     status: "출시",
-    detailPublished:
-      process.env.NEXT_PUBLIC_PUBLISH_MARKETING_CATNIP === "true",
+    detailPublished: true,
     visualTone: "orange",
   },
   {
@@ -39,7 +38,7 @@ export const projects: readonly Project[] = [
     type: "기업 웹사이트",
     scopes: ["기획", "UX/UI", "아임웹 개발"],
     status: "출시",
-    detailPublished: false,
+    detailPublished: true,
     visualTone: "black",
   },
   {
@@ -50,7 +49,7 @@ export const projects: readonly Project[] = [
     type: "AI 교육 제품",
     scopes: ["제품 기획", "UX/UI", "디자인 시스템", "개발 협업"],
     status: "출시",
-    detailPublished: false,
+    detailPublished: true,
     visualTone: "white",
   },
 ] as const;

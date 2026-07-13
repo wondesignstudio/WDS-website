@@ -251,7 +251,8 @@ insert into public.portfolio_projects (
   status_label,
   visual_tone,
   sort_order,
-  is_published
+  is_published,
+  detail_published
 ) values
   (
     'marketing-catnip',
@@ -263,6 +264,7 @@ insert into public.portfolio_projects (
     '출시',
     'orange',
     10,
+    true,
     true
   ),
   (
@@ -275,6 +277,7 @@ insert into public.portfolio_projects (
     '출시',
     'black',
     20,
+    true,
     true
   ),
   (
@@ -287,6 +290,7 @@ insert into public.portfolio_projects (
     '출시',
     'white',
     30,
+    true,
     true
   )
 on conflict (slug) do nothing;

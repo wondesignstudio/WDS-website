@@ -7,7 +7,7 @@ import { createPageMetadata } from "@/lib/metadata";
 
 import "./globals.css";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://wondesign.studio";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://wondesign.studio";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

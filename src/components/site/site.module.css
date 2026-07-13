@@ -1140,15 +1140,43 @@
   line-height: 1.4;
 }
 
-.detailNarrative p {
+.detailNarrativeContent {
   max-width: 880px;
-  margin: 0;
   color: #d0d0d0;
   font-size: var(--type-section);
   font-weight: 510;
   line-height: 1.24;
   letter-spacing: -0.052em;
   word-break: keep-all;
+}
+
+.detailNarrativeContent p,
+.detailNarrativeContent h3,
+.detailNarrativeContent ul {
+  margin: 0;
+}
+
+.detailNarrativeContent > * + * {
+  margin-top: 0.8em;
+}
+
+.detailNarrativeContent h3,
+.detailNarrativeContent strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.detailNarrativeContent ul {
+  padding-left: 1.15em;
+}
+
+.detailNarrativeContent li + li {
+  margin-top: 0.35em;
+}
+
+.detailNarrativeContent a {
+  color: inherit;
+  text-underline-offset: 0.16em;
 }
 
 .nextProject {

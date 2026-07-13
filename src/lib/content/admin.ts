@@ -46,6 +46,28 @@ export async function getAdminProject(client: SupabaseClient, id: string) {
   return data ? mapAdminProject(data) : null;
 }
 
+function mapAdminMedia(row: Record<string, unknown>): AdminMediaAsset {
+  const projectValue = row.portfolio_projects as { title?: unknown } | Array<{ title?: unknown }> | null;
+  const project = Array.isArray(projectValue) ? projectValue[0] : projectValue;
+
+  return {
+    id: String(row.id),
+    projectId: typeof row.project_id === "string" ? row.project_id : null,
+    projectTitle: typeof project?.title === "string" ? project.title : null,
+    kind: row.kind as AdminMediaAsset["kind"],
+    originalName: String(row.original_name),
+    mimeType: String(row.mime_type),
+    byteSize: Number(row.byte_size),
+    altText: String(row.alt_text),
+    caption: String(row.caption ?? ""),
+    clientName: typeof row.client_name === "string" ? row.client_name : null,
+    approvalStatus: row.approval_status as AdminMediaAsset["approvalStatus"],
+    isPublished: Boolean(row.is_published),
+    sortOrder: Number(row.sort_order),
+    createdAt: String(row.created_at),
+  };
+}
+
 export async function listAdminMedia(client: SupabaseClient): Promise<AdminMediaAsset[]> {
   const { data, error } = await client
     .from("media_assets")
@@ -54,29 +76,20 @@ export async function listAdminMedia(client: SupabaseClient): Promise<AdminMedia
     .order("created_at", { ascending: false });
 
   if (error) throw error;
+  return (data ?? []).map(mapAdminMedia);
+}
 
-  return (data ?? []).map((row) => {
-    const project = Array.isArray(row.portfolio_projects)
-      ? row.portfolio_projects[0]
-      : row.portfolio_projects;
+export async function listAdminProjectMedia(client: SupabaseClient, projectId: string) {
+  const { data, error } = await client
+    .from("media_assets")
+    .select("*, portfolio_projects(title)")
+    .eq("kind", "project_image")
+    .eq("project_id", projectId)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false });
 
-    return {
-      id: row.id,
-      projectId: row.project_id,
-      projectTitle: project?.title ?? null,
-      kind: row.kind,
-      originalName: row.original_name,
-      mimeType: row.mime_type,
-      byteSize: Number(row.byte_size),
-      altText: row.alt_text,
-      caption: row.caption,
-      clientName: row.client_name,
-      approvalStatus: row.approval_status,
-      isPublished: row.is_published,
-      sortOrder: row.sort_order,
-      createdAt: row.created_at,
-    } as AdminMediaAsset;
-  });
+  if (error) throw error;
+  return (data ?? []).map(mapAdminMedia);
 }
 
 function mapLegalDocument(row: Record<string, unknown>): LegalDocument {

@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import { parseLegalContent } from "@/components/legal/managed-legal-page";
+import { parseRichText } from "@/components/content/rich-text";
 import {
   legalDocumentInputSchema,
   mediaMetadataInputSchema,
@@ -12,6 +13,13 @@ import {
 const migration = readFileSync(
   new URL(
     "../supabase/migrations/202607140001_content_admin.sql",
+    import.meta.url,
+  ),
+  "utf8",
+);
+const detailPublicationMigration = readFileSync(
+  new URL(
+    "../supabase/migrations/202607140002_publish_seeded_project_details.sql",
     import.meta.url,
   ),
   "utf8",
@@ -43,6 +51,23 @@ describe("content admin migration security contracts", () => {
   it("승인되지 않은 미디어와 비공개 프로젝트 상세의 공개를 DB에서 거부한다", () => {
     expect(migration).toContain("check (not is_published or approval_status = 'approved')");
     expect(migration).toContain("check (not detail_published or is_published)");
+  });
+
+  it("기본 프로젝트 3건의 목록 링크와 상세 공개 상태를 일치시킨다", () => {
+    expect(detailPublicationMigration).toContain("set detail_published = true");
+    for (const slug of ["marketing-catnip", "timeattack", "questboard"]) {
+      expect(detailPublicationMigration).toContain(`'${slug}'`);
+    }
+  });
+});
+
+describe("project content renderer", () => {
+  it("프로젝트 본문의 소제목·목록·문단을 안전한 블록으로 파싱한다", () => {
+    expect(parseRichText("### 목표\n\n핵심 **문장**입니다.\n\n- 첫째\n- 둘째")).toEqual([
+      { type: "subheading", text: "목표" },
+      { type: "paragraph", text: "핵심 **문장**입니다." },
+      { type: "list", items: ["첫째", "둘째"] },
+    ]);
   });
 });
 

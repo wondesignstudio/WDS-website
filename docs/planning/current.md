@@ -39,7 +39,7 @@
 - [x] Vercel Preview 환경 변수 13개 등록
 - [x] Vercel Preview의 `SUPABASE_SERVICE_ROLE_KEY`를 전체 운영 값으로 교체
 - [x] Preview OAuth 콜백에서 불필요한 쿼리를 제거하고 Preview 와일드카드 URL 등록
-- [x] 최신 Preview 배포 생성: `https://wds-website-xj94agtb4-wondesign01-6115s-projects.vercel.app`
+- [x] 최신 Preview 배포 생성: `https://wds-website-ga6w6ey4i-wondesign01-6115s-projects.vercel.app`
 - [x] 권한 nameserver가 아임웹 `ens1–4.hostcocoa.com`이고 GoDaddy에서는 AWS 외부 DNS로 표시되는 상태 확인
 - [x] Resend Tokyo 리전의 DKIM·SPF·MX·선택 DMARC 전환 항목 기록
 - [x] 실제 처리 흐름과 2026 개인정보 처리방침 작성지침을 반영한 공개 문안·동의 버전 확정
@@ -54,10 +54,11 @@
 
 - [x] ESLint 통과
 - [x] TypeScript 검사 통과
-- [x] Vitest 65개 통과
+- [x] Vitest 67개 통과
 - [x] Next.js production build 통과
 - [x] 가로 오버플로·모바일 메뉴 포커스 복귀·404·관리자 환경 미설정 상태 확인
 - [x] 최신 Preview에서 공개 Home·Work·개인정보처리방침과 관리자 프로젝트·미디어·법적 문서 화면을 데스크톱·모바일 검수
+- [x] Questboard 공개 상세 404 수정, 프로젝트별 이미지 업로드와 서식 편집기·미리보기 Preview 검수
 - [x] 공개·관리자 본문과 폼 컨트롤 계산값 `14px`, 모바일 가로 오버플로 0, 브라우저 오류·경고 0 확인
 - [x] 최신 Preview 홈·`robots.txt`·`sitemap.xml` HTTP 200 확인
 - [x] 최신 Preview 문의 API의 미지원 콘텐츠 타입 415, 멱등키 누락 400, 허니팟 무응답 성공 200 확인
@@ -73,6 +74,8 @@
 - [ ] Resend에서 `wondesign.studio` 발신 도메인 검증
 - [x] Supabase에 `202607140001_content_admin.sql` 적용
 - [x] 운영 관리자 Google 로그인과 프로젝트·미디어·법적 문서 목록·편집 화면 접근 확인
+- [x] 기본 프로젝트 3건의 상세 공개 상태 보정 및 Questboard 공개 상세 404 해소
+- [x] 프로젝트 생성 시 대표 이미지 등록, 편집 화면 내 추가 이미지 관리, 서식 도구·미리보기 본문 편집기 구현
 - [ ] 관리자 프로젝트 저장·실제 승인 미디어 업로드·법적 문서 발행 E2E 확인
 - [x] Vercel 프로젝트·Hobby 호환 cron 설정
 - [x] Vercel Preview의 `SUPABASE_SERVICE_ROLE_KEY`를 전체 값으로 교체

@@ -2,8 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ProjectEditor } from "@/components/admin/project-editor";
+import { ProjectMediaEditor } from "@/components/admin/project-media-editor";
 import { getAdminAccess } from "@/lib/auth/admin";
-import { getAdminProject } from "@/lib/content/admin";
+import { getAdminProject, listAdminProjectMedia } from "@/lib/content/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +13,10 @@ export default async function AdminProjectDetailPage({ params }: { params: Promi
   const access = await getAdminAccess();
   if (access.state !== "allowed") return null;
 
-  const project = await getAdminProject(access.client, id);
+  const [project, media] = await Promise.all([
+    getAdminProject(access.client, id),
+    listAdminProjectMedia(access.client, id),
+  ]);
   if (!project) notFound();
 
   return (
@@ -23,9 +27,10 @@ export default async function AdminProjectDetailPage({ params }: { params: Promi
           <p className="text-sm font-semibold text-zinc-500">Portfolio</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">{project.title}</h1>
         </div>
-        {project.isPublished ? <Link className="text-sm font-semibold underline underline-offset-4" href={`/work/${project.slug}`} target="_blank">공개 페이지 확인</Link> : null}
+        {project.detailPublished ? <Link className="text-sm font-semibold underline underline-offset-4" href={`/work/${project.slug}`} target="_blank">공개 페이지 확인</Link> : <span className="text-sm font-semibold text-zinc-500">상세 페이지 미공개</span>}
       </div>
       <ProjectEditor project={project} />
+      <ProjectMediaEditor project={project} assets={media} />
     </main>
   );
 }

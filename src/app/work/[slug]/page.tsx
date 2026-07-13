@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowIcon, ContactBand, SiteFrame } from "@/components/site";
+import { RichText } from "@/components/content/rich-text";
 import styles from "@/components/site/site.module.css";
 import { getPublishedProject } from "@/lib/content/public";
 import { createPageMetadata } from "@/lib/metadata";
@@ -90,7 +91,7 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
           ].filter(([, value]) => value).map(([title, value]) => (
             <article className={styles.detailNarrative} key={title}>
               <h2>{title}</h2>
-              <p>{value}</p>
+              <RichText content={value} className={styles.detailNarrativeContent} />
             </article>
           ))}
         </div>

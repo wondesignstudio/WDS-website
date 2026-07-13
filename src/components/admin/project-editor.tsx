@@ -6,6 +6,7 @@ import { createProjectAction, updateProjectAction } from "@/app/admin/content-ac
 import type { ManagedProject } from "@/lib/content/types";
 
 import { ContentActionMessage } from "./content-action-message";
+import { MarkdownEditor } from "./markdown-editor";
 
 const initialState = { status: "idle" } as const;
 
@@ -70,6 +71,32 @@ export function ProjectEditor({ project }: { project?: ManagedProject }) {
         </div>
       </section>
 
+      {!project ? (
+        <section className="grid gap-5 rounded-2xl border border-zinc-200 bg-white p-6 md:grid-cols-2">
+          <div className="md:col-span-2">
+            <h2 className="text-xl font-semibold">대표 이미지</h2>
+            <p className="mt-2 text-sm leading-6 text-zinc-500">프로젝트를 만들면서 첫 이미지를 함께 등록할 수 있습니다. 추가 이미지는 저장 후 프로젝트 편집 화면에서 관리합니다.</p>
+          </div>
+          <label className="text-sm font-semibold text-zinc-700 md:col-span-2">
+            이미지 파일 <span className="font-normal text-zinc-500">(선택)</span>
+            <input className="mt-2 block w-full rounded-lg border border-zinc-300 px-3 py-2 font-normal" name="projectImage" type="file" accept="image/jpeg,image/png,image/webp" />
+            <span className="mt-2 block font-normal text-zinc-500">JPG, PNG, WebP · 최대 10MB · 한 번에 1개</span>
+          </label>
+          <label className="text-sm font-semibold text-zinc-700">
+            이미지 대체 텍스트
+            <input className="mt-2 w-full rounded-lg border border-zinc-300 px-3 py-2 font-normal" name="imageAltText" maxLength={300} placeholder="이미지를 선택했다면 필수" />
+          </label>
+          <label className="text-sm font-semibold text-zinc-700">
+            이미지 캡션
+            <input className="mt-2 w-full rounded-lg border border-zinc-300 px-3 py-2 font-normal" name="imageCaption" maxLength={500} />
+          </label>
+          <label className="flex items-center gap-2 text-sm font-semibold md:col-span-2">
+            <input name="publishProjectImage" type="checkbox" />
+            업로드와 동시에 승인·공개
+          </label>
+        </section>
+      ) : null}
+
       <section className="grid gap-5 rounded-2xl border border-zinc-200 bg-white p-6">
         <h2 className="text-xl font-semibold">상세 이야기</h2>
         {[
@@ -77,12 +104,7 @@ export function ProjectEditor({ project }: { project?: ManagedProject }) {
           ["roleDescription", "WDS의 역할", project?.roleDescription],
           ["approach", "접근 방식", project?.approach],
           ["outcome", "결과", project?.outcome],
-        ].map(([name, label, value]) => (
-          <label key={name} className="text-sm font-semibold text-zinc-700">
-            {label}
-            <textarea className="mt-2 min-h-32 w-full rounded-lg border border-zinc-300 px-3 py-2 font-normal" name={name} defaultValue={value} maxLength={5000} />
-          </label>
-        ))}
+        ].map(([name, label, value]) => <MarkdownEditor key={name} name={name ?? ""} label={label ?? ""} defaultValue={value ?? ""} />)}
       </section>
 
       <div className="flex items-center gap-4">

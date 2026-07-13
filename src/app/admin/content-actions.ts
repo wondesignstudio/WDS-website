@@ -2,6 +2,7 @@
 
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 import { AdminAuthorizationError, requireAdminAction } from "@/lib/auth/admin";
@@ -22,6 +23,15 @@ const imageExtension: Record<(typeof imageMimeTypes)[number], string> = {
   "image/webp": "webp",
 };
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+
+function validateImageFile(file: File) {
+  if (!imageMimeTypes.includes(file.type as (typeof imageMimeTypes)[number])) {
+    throw new z.ZodError([{ code: "custom", path: ["file"], message: "JPG, PNG, WebP 이미지만 업로드할 수 있습니다.", input: file }]);
+  }
+  if (file.size > MAX_IMAGE_BYTES) {
+    throw new z.ZodError([{ code: "custom", path: ["file"], message: "이미지는 10MB 이하만 업로드할 수 있습니다.", input: file }]);
+  }
+}
 
 function contentActionError(error: unknown): ContentActionState {
   if (error instanceof AdminAuthorizationError) {
@@ -103,12 +113,40 @@ export async function createProjectAction(
   try {
     const { client } = await requireAdminAction();
     const input = projectPayload(formData);
-    const { error } = await client.from("portfolio_projects").insert(projectRow(input));
-    if (error) throw error;
+    const { data: project, error } = await client
+      .from("portfolio_projects")
+      .insert(projectRow(input))
+      .select("id, slug")
+      .single();
+    if (error || !project) throw error ?? new Error("project_create_failed");
+
+    const image = formData.get("projectImage");
+    if (image instanceof File && image.size > 0) {
+      try {
+        const publishImage = checkbox(formData, "publishProjectImage");
+        const imageInput = mediaMetadataInputSchema.parse({
+          projectId: project.id,
+          kind: "project_image",
+          altText: text(formData, "imageAltText"),
+          caption: text(formData, "imageCaption"),
+          clientName: "",
+          approvalStatus: publishImage ? "approved" : "draft",
+          isPublished: publishImage,
+          sortOrder: 0,
+        });
+        await uploadMediaRecord(client, imageInput, image);
+      } catch (uploadError) {
+        await client.from("portfolio_projects").delete().eq("id", project.id);
+        throw uploadError;
+      }
+    }
 
     revalidatePath("/admin/projects");
+    revalidatePath("/admin/media");
     revalidatePath("/work");
-    return { status: "success", message: "프로젝트를 추가했습니다." };
+    revalidatePath(`/work/${project.slug}`);
+    revalidatePath("/");
+    return { status: "success", message: image instanceof File && image.size > 0 ? "프로젝트와 대표 이미지를 추가했습니다." : "프로젝트를 추가했습니다." };
   } catch (error) {
     return contentActionError(error);
   }
@@ -168,11 +206,36 @@ function mediaRow(input: ReturnType<typeof mediaPayload>) {
   };
 }
 
+async function uploadMediaRecord(
+  client: SupabaseClient,
+  input: ReturnType<typeof mediaPayload>,
+  file: File,
+) {
+  validateImageFile(file);
+  const extension = imageExtension[file.type as (typeof imageMimeTypes)[number]];
+  const uploadedPath = `${input.kind}/${randomUUID()}.${extension}`;
+  const { error: uploadError } = await client.storage
+    .from("wds-media")
+    .upload(uploadedPath, file, { contentType: file.type, upsert: false });
+  if (uploadError) throw uploadError;
+
+  const { error: insertError } = await client.from("media_assets").insert({
+    ...mediaRow(input),
+    storage_path: uploadedPath,
+    original_name: file.name.slice(0, 255),
+    mime_type: file.type,
+    byte_size: file.size,
+  });
+  if (insertError) {
+    await client.storage.from("wds-media").remove([uploadedPath]);
+    throw insertError;
+  }
+}
+
 export async function uploadMediaAction(
   _previous: ContentActionState,
   formData: FormData,
 ): Promise<ContentActionState> {
-  let uploadedPath: string | null = null;
   try {
     const { client } = await requireAdminAction();
     const input = mediaPayload(formData);
@@ -181,33 +244,10 @@ export async function uploadMediaAction(
     if (!(file instanceof File) || file.size === 0) {
       return { status: "error", message: "업로드할 이미지 파일을 선택해 주세요." };
     }
-    if (!imageMimeTypes.includes(file.type as (typeof imageMimeTypes)[number])) {
-      return { status: "error", message: "JPG, PNG, WebP 이미지만 업로드할 수 있습니다." };
-    }
-    if (file.size > MAX_IMAGE_BYTES) {
-      return { status: "error", message: "이미지는 10MB 이하만 업로드할 수 있습니다." };
-    }
-
-    const extension = imageExtension[file.type as (typeof imageMimeTypes)[number]];
-    uploadedPath = `${input.kind}/${randomUUID()}.${extension}`;
-    const { error: uploadError } = await client.storage
-      .from("wds-media")
-      .upload(uploadedPath, file, { contentType: file.type, upsert: false });
-    if (uploadError) throw uploadError;
-
-    const { error: insertError } = await client.from("media_assets").insert({
-      ...mediaRow(input),
-      storage_path: uploadedPath,
-      original_name: file.name.slice(0, 255),
-      mime_type: file.type,
-      byte_size: file.size,
-    });
-    if (insertError) {
-      await client.storage.from("wds-media").remove([uploadedPath]);
-      throw insertError;
-    }
+    await uploadMediaRecord(client, input, file);
 
     revalidatePath("/admin/media");
+    if (input.projectId) revalidatePath(`/admin/projects/${input.projectId}`);
     revalidatePath("/work");
     revalidatePath("/");
     return { status: "success", message: "이미지를 업로드했습니다." };
@@ -233,6 +273,7 @@ export async function updateMediaAction(
     if (error || !data) throw error ?? new Error("media_not_found");
 
     revalidatePath("/admin/media");
+    if (input.projectId) revalidatePath(`/admin/projects/${input.projectId}`);
     revalidatePath(`/api/media/${id}`);
     revalidatePath("/work");
     revalidatePath("/");
@@ -248,7 +289,7 @@ export async function deleteMediaAction(formData: FormData) {
     const id = uuidSchema.parse(formData.get("id"));
     const { data } = await client
       .from("media_assets")
-      .select("storage_path")
+      .select("storage_path, project_id")
       .eq("id", id)
       .maybeSingle();
     if (!data) return;
@@ -257,6 +298,7 @@ export async function deleteMediaAction(formData: FormData) {
     if (deleteError) return;
     await client.storage.from("wds-media").remove([data.storage_path]);
     revalidatePath("/admin/media");
+    if (data.project_id) revalidatePath(`/admin/projects/${data.project_id}`);
     revalidatePath("/work");
     revalidatePath("/");
   } catch {
