@@ -88,7 +88,7 @@
 - [x] 기본 프로젝트 3건의 상세 공개 상태 보정 및 Questboard 공개 상세 404 해소
 - [x] 프로젝트 생성 시 대표 이미지 등록, 편집 화면 내 추가 이미지 관리, 서식 도구·미리보기 본문 편집기 구현
 - [ ] 관리자 프로젝트 저장·실제 승인 미디어 업로드·법적 문서 발행 E2E 확인
-- [ ] Supabase에서 `202607140004_normalize_project_order.sql` 적용 후 기존 프로젝트 노출 순서 1·2·3 확인
+- [x] Supabase에 `202607140004_normalize_project_order.sql` 적용 후 기존 프로젝트 노출 순서 1·2·3 확인
 - [x] Vercel 프로젝트·Hobby 호환 cron 설정
 - [x] Vercel Preview의 `SUPABASE_SERVICE_ROLE_KEY`를 전체 값으로 교체
 - [x] 나머지 Vercel Preview 환경 변수 설정
