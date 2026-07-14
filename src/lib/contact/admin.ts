@@ -17,6 +17,7 @@ type RawInquiryListRow = {
   email: string;
   phone: string | null;
   project_type: string;
+  project_background: string;
   budget_range: string;
   status: InquiryListItem["status"];
   inquiry_email_deliveries: Array<{
@@ -28,7 +29,6 @@ type RawInquiryDetailRow = Omit<
   RawInquiryListRow,
   "inquiry_email_deliveries"
 > & {
-  project_background: string;
   expected_scope: string | null;
   desired_schedule: string | null;
   reference_links: string[];
@@ -75,6 +75,7 @@ function mapListItem(row: RawInquiryListRow): InquiryListItem {
     email: row.email,
     phone: row.phone,
     projectType: row.project_type,
+    projectBackground: row.project_background,
     budgetRange: row.budget_range,
     status: row.status,
     failedEmailCount: (row.inquiry_email_deliveries ?? []).filter(
@@ -99,7 +100,7 @@ export async function listInquiries(
   let query = client
     .from("contact_inquiries")
     .select(
-      "id,public_id,created_at,company_name,contact_name,email,phone,project_type,budget_range,status,inquiry_email_deliveries(status)",
+      "id,public_id,created_at,company_name,contact_name,email,phone,project_type,project_background,budget_range,status,inquiry_email_deliveries(status)",
     )
     .order("id", { ascending: false })
     .limit(pageSize + 1);
@@ -172,7 +173,6 @@ export async function getInquiryDetail(
 
   return {
     ...mapListItem(row),
-    projectBackground: row.project_background,
     expectedScope: row.expected_scope,
     desiredSchedule: row.desired_schedule,
     referenceLinks: row.reference_links ?? [],

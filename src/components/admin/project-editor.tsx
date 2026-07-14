@@ -45,6 +45,12 @@ export function ProjectEditor({ project }: { project?: ManagedProject }) {
   const [state, formAction, pending] = useActionState(guardedAction, initialState);
 
   useEffect(() => {
+    if (!project && state.status === "success") {
+      router.replace("/admin/projects?created=1");
+    }
+  }, [project, router, state.status]);
+
+  useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (!dirtyRef.current || pending) return;
       event.preventDefault();

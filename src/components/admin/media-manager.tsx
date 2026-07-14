@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
 
 import {
   updateMediaAction,
@@ -25,7 +26,12 @@ function ProjectSelect({ projects, defaultValue }: { projects: ManagedProject[];
 }
 
 export function MediaUploadForm({ projects }: { projects: ManagedProject[] }) {
+  const router = useRouter();
   const [state, formAction, pending] = useActionState(uploadMediaAction, initialState);
+
+  useEffect(() => {
+    if (state.status === "success") router.replace("/admin/media?uploaded=1");
+  }, [router, state.status]);
 
   return (
     <form action={formAction} className="mt-8 grid gap-5 rounded-2xl border border-zinc-200 bg-white p-6 md:grid-cols-2">

@@ -39,6 +39,30 @@ const mediaDeleteComponent = readFileSync(
   new URL("../src/components/admin/media-delete-action.tsx", import.meta.url),
   "utf8",
 );
+const projectsPage = readFileSync(
+  new URL("../src/app/admin/(protected)/projects/page.tsx", import.meta.url),
+  "utf8",
+);
+const projectListComponent = readFileSync(
+  new URL("../src/components/admin/project-list.tsx", import.meta.url),
+  "utf8",
+);
+const mediaPage = readFileSync(
+  new URL("../src/app/admin/(protected)/media/page.tsx", import.meta.url),
+  "utf8",
+);
+const inquiryPage = readFileSync(
+  new URL("../src/app/admin/(protected)/inquiries/page.tsx", import.meta.url),
+  "utf8",
+);
+const inquiryListComponent = readFileSync(
+  new URL("../src/components/admin/inquiry-list-table.tsx", import.meta.url),
+  "utf8",
+);
+const inquiryRepository = readFileSync(
+  new URL("../src/lib/contact/admin.ts", import.meta.url),
+  "utf8",
+);
 
 describe("content admin migration security contracts", () => {
   it("프로젝트·미디어·법적 문서 모두 관리자 RLS를 강제한다", () => {
@@ -113,6 +137,29 @@ describe("media permanent deletion contracts", () => {
     expect(mediaDeleteComponent).toContain('pending ? "삭제 중…"');
     expect(mediaDeleteComponent).toContain('state.status === "success"');
     expect(mediaDeleteComponent).toContain("<ContentActionMessage state={state} />");
+  });
+});
+
+describe("admin content navigation contracts", () => {
+  it("프로젝트와 미디어 등록을 각각 전용 페이지로 분리한다", () => {
+    expect(projectsPage).toContain('href="/admin/projects/new"');
+    expect(projectsPage).not.toContain("<ProjectEditor");
+    expect(mediaPage).toContain('href="/admin/media/new"');
+    expect(mediaPage).not.toContain("<MediaUploadForm");
+  });
+
+  it("프로젝트 목록에서 갤러리와 테이블 보기를 제공한다", () => {
+    expect(projectsPage).toContain("<ProjectGallery");
+    expect(projectsPage).toContain("<ProjectTable");
+    expect(projectListComponent).toContain("대표 이미지 없음");
+    expect(projectListComponent).toContain("<ProjectRowActions");
+  });
+
+  it("문의 목록에 문의 배경 요약과 명시적인 상세 보기 액션을 제공한다", () => {
+    expect(inquiryRepository).toContain("project_type,project_background,budget_range");
+    expect(inquiryPage).toContain("<InquiryListTable");
+    expect(inquiryListComponent).toContain("{item.projectBackground}");
+    expect(inquiryListComponent).toContain("문의 상세 보기");
   });
 });
 

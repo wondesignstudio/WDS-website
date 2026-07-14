@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import {
@@ -36,10 +36,12 @@ function isAdminNavigationClick(event: MouseEvent) {
 
 export function AdminNavigationFeedback() {
   const pathname = usePathname();
-  const [navigationState, setNavigationState] = useState({ pathname, active: false });
+  const searchParams = useSearchParams();
+  const location = `${pathname}?${searchParams.toString()}`;
+  const [navigationState, setNavigationState] = useState({ location, active: false });
   const startTimer = useRef<number | null>(null);
   const fallbackTimer = useRef<number | null>(null);
-  const loading = navigationState.pathname === pathname && navigationState.active;
+  const loading = navigationState.location === location && navigationState.active;
 
   useEffect(() => {
     const clearTimers = () => {
@@ -51,9 +53,9 @@ export function AdminNavigationFeedback() {
 
     const start = () => {
       clearTimers();
-      setNavigationState({ pathname, active: true });
+      setNavigationState({ location, active: true });
       fallbackTimer.current = window.setTimeout(
-        () => setNavigationState({ pathname, active: false }),
+        () => setNavigationState({ location, active: false }),
         FALLBACK_TIMEOUT_MS,
       );
     };
@@ -66,7 +68,7 @@ export function AdminNavigationFeedback() {
 
     const stop = () => {
       clearTimers();
-      setNavigationState({ pathname, active: false });
+      setNavigationState({ location, active: false });
     };
 
     document.addEventListener("click", scheduleStart, true);
@@ -83,7 +85,7 @@ export function AdminNavigationFeedback() {
       window.removeEventListener(ADMIN_NAVIGATION_START_EVENT, start);
       window.removeEventListener(ADMIN_NAVIGATION_BLOCKED_EVENT, stop);
     };
-  }, [pathname]);
+  }, [location]);
 
   if (!loading) return null;
 

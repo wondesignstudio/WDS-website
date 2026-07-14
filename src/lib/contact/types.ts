@@ -15,6 +15,7 @@ export type InquiryListItem = {
   email: string;
   phone: string | null;
   projectType: string;
+  projectBackground: string;
   budgetRange: string;
   status: InquiryStatus;
   failedEmailCount: number;
@@ -30,7 +31,6 @@ export type EmailDeliveryStatus = {
 };
 
 export type InquiryDetail = InquiryListItem & {
-  projectBackground: string;
   expectedScope: string | null;
   desiredSchedule: string | null;
   referenceLinks: string[];
