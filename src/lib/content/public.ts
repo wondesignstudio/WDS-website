@@ -38,7 +38,7 @@ function fallbackManagedProjects(): ManagedProject[] {
     roleDescription: "",
     approach: "",
     outcome: "",
-    sortOrder: (index + 1) * 10,
+    sortOrder: index + 1,
     isPublished: true,
     detailPublished: project.detailPublished,
     media: [],

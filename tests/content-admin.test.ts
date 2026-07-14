@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
 import { describe, expect, it } from "vitest";
 
@@ -27,6 +27,13 @@ const detailPublicationMigration = readFileSync(
 const projectDeleteMigration = readFileSync(
   new URL(
     "../supabase/migrations/202607140003_project_media_delete_cascade.sql",
+    import.meta.url,
+  ),
+  "utf8",
+);
+const projectOrderMigration = readFileSync(
+  new URL(
+    "../supabase/migrations/202607140004_normalize_project_order.sql",
     import.meta.url,
   ),
   "utf8",
@@ -61,6 +68,14 @@ const inquiryListComponent = readFileSync(
 );
 const inquiryRepository = readFileSync(
   new URL("../src/lib/contact/admin.ts", import.meta.url),
+  "utf8",
+);
+const adminAuthorization = readFileSync(
+  new URL("../src/lib/auth/admin.ts", import.meta.url),
+  "utf8",
+);
+const navigationFeedback = readFileSync(
+  new URL("../src/components/admin/admin-navigation-feedback.tsx", import.meta.url),
   "utf8",
 );
 
@@ -102,6 +117,13 @@ describe("content admin migration security contracts", () => {
   it("프로젝트 삭제 시 연결된 미디어 정보도 같은 DB 트랜잭션에서 삭제한다", () => {
     expect(projectDeleteMigration).toContain("references public.portfolio_projects(id)");
     expect(projectDeleteMigration).toContain("on delete cascade");
+  });
+
+  it("프로젝트 노출 순서를 1부터 연속된 값으로 정규화한다", () => {
+    expect(projectOrderMigration).toContain("row_number() over");
+    expect(projectOrderMigration).toContain("normalized_order");
+    expect(projectOrderMigration).toContain("check (sort_order >= 1)");
+    expect(contentActions).toContain("normalizeProjectSortOrders");
   });
 });
 
@@ -149,8 +171,10 @@ describe("admin content navigation contracts", () => {
   });
 
   it("프로젝트 목록에서 갤러리와 테이블 보기를 제공한다", () => {
-    expect(projectsPage).toContain("<ProjectGallery");
-    expect(projectsPage).toContain("<ProjectTable");
+    expect(projectsPage).toContain("<ProjectList");
+    expect(projectListComponent).toContain("useState(initialView)");
+    expect(projectListComponent).toContain('setView("gallery")');
+    expect(projectListComponent).toContain('setView("table")');
     expect(projectListComponent).toContain("대표 이미지 없음");
     expect(projectListComponent).toContain("<ProjectRowActions");
   });
@@ -160,6 +184,12 @@ describe("admin content navigation contracts", () => {
     expect(inquiryPage).toContain("<InquiryListTable");
     expect(inquiryListComponent).toContain("{item.projectBackground}");
     expect(inquiryListComponent).toContain("문의 상세 보기");
+  });
+
+  it("관리자 인증을 요청 단위로 재사용하고 짧은 이동에는 로딩을 표시하지 않는다", () => {
+    expect(adminAuthorization).toContain("cache(async function getAdminAccess");
+    expect(navigationFeedback).toContain("const FEEDBACK_DELAY_MS = 240");
+    expect(existsSync(new URL("../src/app/admin/(protected)/loading.tsx", import.meta.url))).toBe(false);
   });
 });
 
@@ -178,11 +208,33 @@ describe("content admin input contracts", () => {
       roleDescription: "",
       approach: "",
       outcome: "",
-      sortOrder: 0,
+      sortOrder: 1,
       isPublished: false,
       detailPublished: true,
     });
     expect(result.success).toBe(false);
+  });
+
+  it("프로젝트 노출 순서는 1 이상의 정수만 허용한다", () => {
+    const input = {
+      slug: "test-project",
+      title: "테스트",
+      clientName: "",
+      summary: "프로젝트 요약",
+      projectType: "웹사이트",
+      scopes: ["기획"],
+      statusLabel: "출시",
+      visualTone: "white" as const,
+      challenge: "",
+      roleDescription: "",
+      approach: "",
+      outcome: "",
+      isPublished: false,
+      detailPublished: false,
+    };
+
+    expect(portfolioProjectInputSchema.safeParse({ ...input, sortOrder: 0 }).success).toBe(false);
+    expect(portfolioProjectInputSchema.safeParse({ ...input, sortOrder: 1 }).success).toBe(true);
   });
 
   it("승인된 자산만 공개할 수 있다", () => {

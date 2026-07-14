@@ -30,7 +30,7 @@ export const portfolioProjectInputSchema = z.object({
   roleDescription: z.string().trim().max(5_000),
   approach: z.string().trim().max(5_000),
   outcome: z.string().trim().max(5_000),
-  sortOrder: z.number().int().min(-10_000).max(10_000),
+  sortOrder: z.number().int().min(1, "노출 순서는 1 이상이어야 합니다.").max(10_000),
   isPublished: z.boolean(),
   detailPublished: z.boolean(),
 }).refine((value) => !value.detailPublished || value.isPublished, {

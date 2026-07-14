@@ -1,4 +1,5 @@
 import type { SupabaseClient, User } from "@supabase/supabase-js";
+import { cache } from "react";
 
 import { SupabaseConfigurationError } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -17,7 +18,7 @@ export class AdminAuthorizationError extends Error {
   }
 }
 
-export async function getAdminAccess(): Promise<AdminAccess> {
+export const getAdminAccess = cache(async function getAdminAccess(): Promise<AdminAccess> {
   let client: SupabaseClient;
 
   try {
@@ -52,7 +53,7 @@ export async function getAdminAccess(): Promise<AdminAccess> {
   }
 
   return { state: "allowed", client, user };
-}
+});
 
 export async function requireAdminAction() {
   const access = await getAdminAccess();

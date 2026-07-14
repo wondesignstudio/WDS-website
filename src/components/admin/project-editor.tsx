@@ -16,7 +16,7 @@ import { UnsavedChangesDialog } from "./unsaved-changes-dialog";
 
 const initialState = { status: "idle" } as const;
 
-export function ProjectEditor({ project }: { project?: ManagedProject }) {
+export function ProjectEditor({ project, defaultSortOrder = 1 }: { project?: ManagedProject; defaultSortOrder?: number }) {
   const router = useRouter();
   const action = project ? updateProjectAction : createProjectAction;
   const [dirty, setDirty] = useState(false);
@@ -136,8 +136,8 @@ export function ProjectEditor({ project }: { project?: ManagedProject }) {
           <input className="mt-2 w-full rounded-lg border border-zinc-300 px-3 py-2 font-normal" name="statusLabel" defaultValue={project?.status ?? "출시"} required maxLength={40} />
         </label>
         <label className="text-sm font-semibold text-zinc-700">
-          목록 순서
-          <input className="mt-2 w-full rounded-lg border border-zinc-300 px-3 py-2 font-normal" name="sortOrder" type="number" defaultValue={project?.sortOrder ?? 0} required />
+          노출 순서
+          <input className="mt-2 w-full rounded-lg border border-zinc-300 px-3 py-2 font-normal" name="sortOrder" type="number" min={1} defaultValue={project?.sortOrder ?? defaultSortOrder} required />
         </label>
         <label className="text-sm font-semibold text-zinc-700">
           비주얼 톤

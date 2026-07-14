@@ -9,6 +9,7 @@ import {
 } from "@/lib/admin/navigation-events";
 
 const FALLBACK_TIMEOUT_MS = 12_000;
+const FEEDBACK_DELAY_MS = 240;
 
 function isAdminNavigationClick(event: MouseEvent) {
   if (
@@ -63,7 +64,7 @@ export function AdminNavigationFeedback() {
     const scheduleStart = (event: MouseEvent) => {
       if (!isAdminNavigationClick(event)) return;
       clearTimers();
-      startTimer.current = window.setTimeout(start, 0);
+      startTimer.current = window.setTimeout(start, FEEDBACK_DELAY_MS);
     };
 
     const stop = () => {

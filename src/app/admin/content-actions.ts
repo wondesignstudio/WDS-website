@@ -106,6 +106,24 @@ function projectRow(input: ReturnType<typeof projectPayload>) {
   };
 }
 
+async function normalizeProjectSortOrders(client: SupabaseClient) {
+  const { data, error } = await client
+    .from("portfolio_projects")
+    .select("id, sort_order")
+    .order("sort_order", { ascending: true })
+    .order("updated_at", { ascending: false })
+    .order("created_at", { ascending: true });
+  if (error) return false;
+
+  const updates = (data ?? []).flatMap((project, index) => (
+    Number(project.sort_order) === index + 1
+      ? []
+      : [client.from("portfolio_projects").update({ sort_order: index + 1 }).eq("id", project.id)]
+  ));
+  const results = await Promise.all(updates);
+  return results.every((result) => !result.error);
+}
+
 export async function createProjectAction(
   _previous: ContentActionState,
   formData: FormData,
@@ -140,13 +158,19 @@ export async function createProjectAction(
         throw uploadError;
       }
     }
+    const orderNormalized = await normalizeProjectSortOrders(client);
 
     revalidatePath("/admin/projects");
     revalidatePath("/admin/media");
     revalidatePath("/work");
     revalidatePath(`/work/${project.slug}`);
     revalidatePath("/");
-    return { status: "success", message: image instanceof File && image.size > 0 ? "프로젝트와 대표 이미지를 추가했습니다." : "프로젝트를 추가했습니다." };
+    return {
+      status: "success",
+      message: orderNormalized
+        ? (image instanceof File && image.size > 0 ? "프로젝트와 대표 이미지를 추가했습니다." : "프로젝트를 추가했습니다.")
+        : "프로젝트를 추가했지만 노출 순서 자동 정리에 실패했습니다. 순서를 확인해 주세요.",
+    };
   } catch (error) {
     return contentActionError(error);
   }
@@ -167,13 +191,16 @@ export async function updateProjectAction(
       .select("slug")
       .maybeSingle();
     if (error || !data) throw error ?? new Error("project_not_found");
+    const orderNormalized = await normalizeProjectSortOrders(client);
 
     revalidatePath("/admin/projects");
     revalidatePath(`/admin/projects/${id}`);
     revalidatePath("/work");
     revalidatePath(`/work/${data.slug}`);
     revalidatePath("/");
-    return { status: "success", message: "프로젝트를 저장했습니다." };
+    return orderNormalized
+      ? { status: "success", message: "프로젝트를 저장했습니다." }
+      : { status: "success", message: "프로젝트를 저장했지만 노출 순서 자동 정리에 실패했습니다. 순서를 확인해 주세요." };
   } catch (error) {
     return contentActionError(error);
   }
@@ -204,9 +231,12 @@ export async function deleteProjectAction(
     const storagePaths = (media ?? []).flatMap((item) => (
       typeof item.storage_path === "string" ? [item.storage_path] : []
     ));
-    const cleanupResult = storagePaths.length > 0
-      ? await client.storage.from("wds-media").remove(storagePaths)
-      : { error: null };
+    const [cleanupResult, orderNormalized] = await Promise.all([
+      storagePaths.length > 0
+        ? client.storage.from("wds-media").remove(storagePaths)
+        : Promise.resolve({ error: null }),
+      normalizeProjectSortOrders(client),
+    ]);
 
     revalidatePath("/admin/projects");
     revalidatePath("/admin/media");
@@ -214,9 +244,12 @@ export async function deleteProjectAction(
     revalidatePath(`/work/${project.slug}`);
     revalidatePath("/");
 
-    return cleanupResult.error
-      ? { status: "success", message: "프로젝트를 삭제했습니다. 비공개 Storage 파일 정리 상태는 관리자에서 다시 확인해 주세요." }
-      : { status: "success", message: "프로젝트를 삭제했습니다." };
+    if (cleanupResult.error) {
+      return { status: "success", message: "프로젝트를 삭제했습니다. 비공개 Storage 파일 정리 상태는 관리자에서 다시 확인해 주세요." };
+    }
+    return orderNormalized
+      ? { status: "success", message: "프로젝트를 삭제했습니다." }
+      : { status: "success", message: "프로젝트를 삭제했지만 노출 순서 자동 정리에 실패했습니다. 순서를 확인해 주세요." };
   } catch (error) {
     return contentActionError(error);
   }

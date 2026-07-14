@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import type { AdminMediaAsset, LegalDocument, ManagedProject } from "./types";
+import type { AdminMediaAsset, AdminProjectCover, LegalDocument, ManagedProject } from "./types";
 
 function mapAdminProject(row: Record<string, unknown>): ManagedProject {
   return {
@@ -44,6 +44,35 @@ export async function getAdminProject(client: SupabaseClient, id: string) {
 
   if (error) throw error;
   return data ? mapAdminProject(data) : null;
+}
+
+export async function getNextProjectSortOrder(client: SupabaseClient) {
+  const { data, error } = await client
+    .from("portfolio_projects")
+    .select("sort_order")
+    .order("sort_order", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data ? Number(data.sort_order) + 1 : 1;
+}
+
+export async function listAdminProjectCovers(client: SupabaseClient): Promise<AdminProjectCover[]> {
+  const { data, error } = await client
+    .from("media_assets")
+    .select("id, project_id, alt_text")
+    .eq("kind", "project_image")
+    .not("project_id", "is", null)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []).map((row) => ({
+    id: String(row.id),
+    projectId: String(row.project_id),
+    altText: String(row.alt_text),
+  }));
 }
 
 function mapAdminMedia(row: Record<string, unknown>): AdminMediaAsset {

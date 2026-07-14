@@ -50,6 +50,12 @@ export type AdminMediaAsset = {
   createdAt: string;
 };
 
+export type AdminProjectCover = {
+  id: string;
+  projectId: string;
+  altText: string;
+};
+
 export type LegalDocument = {
   id: string;
   documentType: LegalDocumentType;
