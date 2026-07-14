@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="입금액을 세금, 직접원가, 런웨이, 자산 종잣돈으로 자동 분배하는 계산기">
+  <title>입금 분배 계산기</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div>
+        <span class="eyebrow">Cash allocation · 개인사업자용</span>
+        <h1>입금된 돈을<br>쓸 돈과 지킬 돈으로 나눕니다.</h1>
+        <p>VAT, 종합소득세 준비금, 직접원가와 런웨이를 먼저 분리하고 남는 금액만 자산 종잣돈으로 계산합니다.</p>
+      </div>
+      <div class="actions">
+        <button class="btn secondary" id="reset">기본값 복원</button>
+        <button class="btn primary" id="copyBtn">분배안 복사</button>
+      </div>
+    </header>
+
+    <section class="grid">
+      <article class="card">
+        <div class="head">
+          <h2>분배 기준 입력</h2>
+          <p>금액은 원 단위입니다. 입력값은 현재 브라우저에 자동 저장됩니다.</p>
+        </div>
+        <div class="body">
+          <p class="section-title">이번 입금</p>
+          <div class="fields">
+            <div class="full">
+              <label for="gross">VAT 포함 입금액</label>
+              <div class="input"><input id="gross" type="number" min="0" step="10000" value="9350000"><span class="unit">원</span></div>
+              <div class="hint">아직 입금되지 않은 예정금은 넣지 않는 것을 권장합니다.</div>
+            </div>
+            <div>
+              <label for="vatRate">VAT 세율</label>
+              <div class="input"><input id="vatRate" type="number" min="0" max="100" step=".1" value="10"><span class="unit">%</span></div>
+            </div>
+            <div>
+              <label for="incomeRate">종소세 준비율</label>
+              <div class="input"><input id="incomeRate" type="number" min="0" max="100" step=".1" value="10"><span class="unit">%</span></div>
+              <div class="hint">공급가액 기준의 현금 준비율입니다.</div>
+            </div>
+            <div class="full">
+              <label for="directCost">확정 직접원가</label>
+              <div class="input"><input id="directCost" type="number" min="0" step="10000" value="0"><span class="unit">원</span></div>
+              <div class="hint">외주비·개발비처럼 프로젝트에 반드시 필요한 비용만 입력합니다.</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <p class="section-title">런웨이 목표</p>
+          <div class="fields">
+            <div>
+              <label for="runwayMonths">목표 개월 수</label>
+              <div class="input"><input id="runwayMonths" type="number" min="0" max="24" step="1" value="3"><span class="unit">개월</span></div>
+            </div>
+            <div>
+              <label for="personalMonthly">개인 월 최소생활비</label>
+              <div class="input"><input id="personalMonthly" type="number" min="0" step="10000" value="1000000"><span class="unit">원</span></div>
+            </div>
+            <div>
+              <label for="personalCash">현재 개인 런웨이 현금</label>
+              <div class="input"><input id="personalCash" type="number" min="0" step="10000" value="1500000"><span class="unit">원</span></div>
+            </div>
+            <div>
+              <label for="companyMonthly">회사 월 고정비</label>
+              <div class="input"><input id="companyMonthly" type="number" min="0" step="10000" value="500000"><span class="unit">원</span></div>
+            </div>
+            <div>
+              <label for="companyCash">현재 회사 런웨이 현금</label>
+              <div class="input"><input id="companyCash" type="number" min="0" step="10000" value="0"><span class="unit">원</span></div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <details>
+            <summary>선택 항목: 채무조정 상환 재개 대비금</summary>
+            <div class="fields">
+              <div>
+                <label for="debtMonthly">예상 월 납입액</label>
+                <div class="input"><input id="debtMonthly" type="number" min="0" step="10000" value="0"><span class="unit">원</span></div>
+              </div>
+              <div>
+                <label for="debtMonths">미리 준비할 개월 수</label>
+                <div class="input"><input id="debtMonths" type="number" min="0" max="24" step="1" value="0"><span class="unit">개월</span></div>
+              </div>
+            </div>
+          </details>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <h2>추천 분배안</h2>
+          <p>기본 우선순위: 세금 → 직접원가 → 런웨이 → 상환 준비 → 자산 종잣돈</p>
+        </div>
+        <div class="body">
+          <div class="summary">
+            <div class="donut-wrap">
+              <div class="donut" id="donut"></div>
+              <div class="donut-label"><span>입금액</span><strong id="grossShort">₩935만</strong></div>
+            </div>
+            <div>
+              <p class="headline-label">자산 종잣돈으로 남는 금액</p>
+              <h3 class="headline" id="assetSeed">₩4,650,000</h3>
+              <div class="status good" id="status">3개월 런웨이를 채우고도 잔액이 남습니다.</div>
+            </div>
+          </div>
+
+          <div class="rows" id="rows"></div>
+          <div class="notice">이 계산기는 현금 분리용 내부 가이드입니다. 실제 세액·필요경비·채무조정 납입액은 세무 신고와 약정서에 따라 달라질 수 있습니다.</div>
+          <div class="copy" id="copyText"></div>
+        </div>
+      </article>
+    </section>
+
+    <footer>
+      <span>입금이 확인된 날 바로 분리하는 것을 권장합니다.</span>
+      <span>입력값은 서버로 전송되지 않습니다.</span>
+    </footer>
+  </main>
+  <div class="toast" id="toast">분배안을 복사했습니다.</div>
+  <script src="app.js"></script>
+</body>
+</html>
