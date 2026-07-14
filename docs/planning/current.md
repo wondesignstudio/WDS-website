@@ -65,6 +65,7 @@
 - [x] Resend 대시보드에서 Tokyo 리전 DKIM·SPF·MX·선택 DMARC 실제 값과 `Not Started` 상태 재확인
 - [x] 관리자 프로젝트 목록에서 상세 본문 조회를 제거해 초기 데이터 전송량 축소
 - [x] 프로젝트 삭제에 서버 확인값 검증과 Storage 우선 삭제를 적용해 고아 파일 위험 축소
+- [x] 관리자 성능·삭제 안전성 개선 Preview 배포 생성: `https://wds-website-7ygm5xu1g-wondesign01-6115s-projects.vercel.app`
 
 ## 검증 결과
 
