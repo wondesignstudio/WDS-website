@@ -39,7 +39,7 @@
 - [x] Vercel Preview 환경 변수 13개 등록
 - [x] Vercel Preview의 `SUPABASE_SERVICE_ROLE_KEY`를 전체 운영 값으로 교체
 - [x] Preview OAuth 콜백에서 불필요한 쿼리를 제거하고 Preview 와일드카드 URL 등록
-- [x] 최신 Preview 배포 생성: `https://wds-website-peqlzx3p3-wondesign01-6115s-projects.vercel.app`
+- [x] 최신 Preview 배포 생성: `https://wds-website-o2k7pgu5u-wondesign01-6115s-projects.vercel.app`
 - [x] 권한 nameserver가 아임웹 `ens1–4.hostcocoa.com`이고 GoDaddy에서는 AWS 외부 DNS로 표시되는 상태 확인
 - [x] Resend Tokyo 리전의 DKIM·SPF·MX·선택 DMARC 전환 항목 기록
 - [x] 실제 처리 흐름과 2026 개인정보 처리방침 작성지침을 반영한 공개 문안·동의 버전 확정
@@ -50,12 +50,13 @@
 - [x] 공개 Work·Home·법적 문서를 관리자 발행 데이터와 연결하고 migration 전 fallback 유지
 - [x] Supabase 운영 프로젝트에 콘텐츠 관리자 migration 적용 및 테이블 3종·비공개 버킷·기본 프로젝트 3건 확인
 - [x] 관리자 전체 화면을 데스크톱 고정 사이드바·모바일 접근성 드로어 구조로 전환
+- [x] 개별 미디어 영구 삭제에 확인 모달·처리 상태·단계별 오류 안내·재시도 흐름 적용
 
 ## 검증 결과
 
 - [x] ESLint 통과
 - [x] TypeScript 검사 통과
-- [x] Vitest 68개 통과
+- [x] Vitest 70개 통과
 - [x] Next.js production build 통과
 - [x] 가로 오버플로·모바일 메뉴 포커스 복귀·404·관리자 환경 미설정 상태 확인
 - [x] 최신 Preview에서 공개 Home·Work·개인정보처리방침과 관리자 프로젝트·미디어·법적 문서 화면을 데스크톱·모바일 검수

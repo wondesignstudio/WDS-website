@@ -3,13 +3,13 @@
 import { useActionState } from "react";
 
 import {
-  deleteMediaAction,
   updateMediaAction,
   uploadMediaAction,
 } from "@/app/admin/content-actions";
 import type { AdminMediaAsset, ManagedProject } from "@/lib/content/types";
 
 import { ContentActionMessage } from "./content-action-message";
+import { MediaDeleteAction } from "./media-delete-action";
 
 const initialState = { status: "idle" } as const;
 
@@ -143,10 +143,7 @@ export function MediaAssetEditor({ asset, projects }: { asset: AdminMediaAsset; 
           </div>
           <div className="md:col-span-2"><ContentActionMessage state={state} /></div>
         </form>
-        <form action={deleteMediaAction} className="mt-4">
-          <input type="hidden" name="id" value={asset.id} />
-          <button className="text-sm font-semibold text-red-700" type="submit">파일과 기록 영구 삭제</button>
-        </form>
+        <MediaDeleteAction id={asset.id} assetName={asset.originalName} />
       </div>
     </article>
   );

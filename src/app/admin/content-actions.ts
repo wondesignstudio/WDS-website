@@ -326,26 +326,58 @@ export async function updateMediaAction(
   }
 }
 
-export async function deleteMediaAction(formData: FormData) {
+export async function deleteMediaAction(
+  _previous: ContentActionState,
+  formData: FormData,
+): Promise<ContentActionState> {
   try {
     const { client } = await requireAdminAction();
     const id = uuidSchema.parse(formData.get("id"));
-    const { data } = await client
+    if (formData.get("confirmed") !== "true") {
+      return { status: "error", message: "삭제 확인이 필요합니다." };
+    }
+
+    const { data, error: lookupError } = await client
       .from("media_assets")
       .select("storage_path, project_id")
       .eq("id", id)
       .maybeSingle();
-    if (!data) return;
+    if (lookupError) {
+      return { status: "error", message: "삭제할 미디어 정보를 불러오지 못했습니다. 다시 시도해 주세요." };
+    }
+    if (!data) {
+      return { status: "success", message: "파일과 기록이 이미 삭제되었습니다." };
+    }
 
-    const { error: deleteError } = await client.from("media_assets").delete().eq("id", id);
-    if (deleteError) return;
-    await client.storage.from("wds-media").remove([data.storage_path]);
-    revalidatePath("/admin/media");
-    if (data.project_id) revalidatePath(`/admin/projects/${data.project_id}`);
+    const { error: storageError } = await client.storage
+      .from("wds-media")
+      .remove([data.storage_path]);
+    if (storageError) {
+      return {
+        status: "error",
+        message: "파일 삭제에 실패해 기록을 유지했습니다. 잠시 후 다시 시도해 주세요.",
+      };
+    }
+
+    const { data: deleted, error: deleteError } = await client
+      .from("media_assets")
+      .delete()
+      .eq("id", id)
+      .select("id")
+      .maybeSingle();
+    if (deleteError || !deleted) {
+      return {
+        status: "error",
+        message: "파일은 삭제했지만 기록 정리에 실패했습니다. 다시 시도하면 남은 기록을 정리합니다.",
+      };
+    }
+
+    revalidatePath(`/api/media/${id}`);
     revalidatePath("/work");
     revalidatePath("/");
-  } catch {
-    return;
+    return { status: "success", message: "파일과 연결된 기록을 영구 삭제했습니다." };
+  } catch (error) {
+    return contentActionError(error);
   }
 }
 

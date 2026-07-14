@@ -31,6 +31,14 @@ const projectDeleteMigration = readFileSync(
   ),
   "utf8",
 );
+const contentActions = readFileSync(
+  new URL("../src/app/admin/content-actions.ts", import.meta.url),
+  "utf8",
+);
+const mediaDeleteComponent = readFileSync(
+  new URL("../src/components/admin/media-delete-action.tsx", import.meta.url),
+  "utf8",
+);
 
 describe("content admin migration security contracts", () => {
   it("프로젝트·미디어·법적 문서 모두 관리자 RLS를 강제한다", () => {
@@ -80,6 +88,31 @@ describe("project content renderer", () => {
       { type: "paragraph", text: "핵심 **문장**입니다." },
       { type: "list", items: ["첫째", "둘째"] },
     ]);
+  });
+});
+
+describe("media permanent deletion contracts", () => {
+  const deleteAction = contentActions.slice(
+    contentActions.indexOf("export async function deleteMediaAction"),
+    contentActions.indexOf("export async function createLegalDraftAction"),
+  );
+
+  it("삭제 확인과 Storage·DB 결과를 모두 검증한다", () => {
+    expect(deleteAction).toContain('formData.get("confirmed") !== "true"');
+    expect(deleteAction).toContain("error: storageError");
+    expect(deleteAction).toContain("error: deleteError");
+    expect(deleteAction).toContain('.select("id")');
+    expect(deleteAction.indexOf('.from("wds-media")')).toBeLessThan(
+      deleteAction.indexOf(".delete()"),
+    );
+  });
+
+  it("확인 모달과 진행·성공·오류 피드백을 제공한다", () => {
+    expect(mediaDeleteComponent).toContain("useActionState(deleteMediaAction");
+    expect(mediaDeleteComponent).toContain("dialog.showModal()");
+    expect(mediaDeleteComponent).toContain('pending ? "삭제 중…"');
+    expect(mediaDeleteComponent).toContain('state.status === "success"');
+    expect(mediaDeleteComponent).toContain("<ContentActionMessage state={state} />");
   });
 });
 
