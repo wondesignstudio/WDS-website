@@ -27,7 +27,7 @@ function mapAdminProject(row: Record<string, unknown>): ManagedProject {
 export async function listAdminProjects(client: SupabaseClient) {
   const { data, error } = await client
     .from("portfolio_projects")
-    .select("*")
+    .select("id, slug, title, client_name, summary, project_type, scopes, status_label, visual_tone, sort_order, is_published, detail_published")
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: true });
 

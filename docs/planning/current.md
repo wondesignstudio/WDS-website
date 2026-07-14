@@ -63,12 +63,14 @@
 - [x] `wondesign.studio`와 `www.wondesign.studio`를 Vercel `wds-website` 프로젝트에 등록
 - [x] Vercel 배포 보호가 custom domain을 제외한 표준 보호로 설정되어 출시 도메인은 공개되는 상태 확인
 - [x] Resend 대시보드에서 Tokyo 리전 DKIM·SPF·MX·선택 DMARC 실제 값과 `Not Started` 상태 재확인
+- [x] 관리자 프로젝트 목록에서 상세 본문 조회를 제거해 초기 데이터 전송량 축소
+- [x] 프로젝트 삭제에 서버 확인값 검증과 Storage 우선 삭제를 적용해 고아 파일 위험 축소
 
 ## 검증 결과
 
 - [x] ESLint 통과
 - [x] TypeScript 검사 통과
-- [x] Vitest 76개 통과
+- [x] Vitest 78개 통과
 - [x] Next.js production build 통과
 - [x] 가로 오버플로·모바일 메뉴 포커스 복귀·404·관리자 환경 미설정 상태 확인
 - [x] 최신 Preview에서 공개 Home·Work·개인정보처리방침과 관리자 프로젝트·미디어·법적 문서 화면을 데스크톱·모바일 검수

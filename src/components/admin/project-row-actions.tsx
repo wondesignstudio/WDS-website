@@ -56,6 +56,7 @@ export function ProjectRowActions({ id, title }: { id: string; title: string }) 
       >
         <form action={formAction} className="p-6 sm:p-7">
           <input type="hidden" name="id" value={id} />
+          <input type="hidden" name="confirmed" value="true" />
           <p className="text-sm font-semibold text-red-700">프로젝트 삭제</p>
           <h2 id={titleId} className="mt-2 text-2xl font-semibold tracking-tight">
             {title} 프로젝트를 삭제할까요?

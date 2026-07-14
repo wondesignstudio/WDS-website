@@ -42,6 +42,10 @@ const contentActions = readFileSync(
   new URL("../src/app/admin/content-actions.ts", import.meta.url),
   "utf8",
 );
+const contentAdminRepository = readFileSync(
+  new URL("../src/lib/content/admin.ts", import.meta.url),
+  "utf8",
+);
 const mediaDeleteComponent = readFileSync(
   new URL("../src/components/admin/media-delete-action.tsx", import.meta.url),
   "utf8",
@@ -52,6 +56,10 @@ const projectsPage = readFileSync(
 );
 const projectListComponent = readFileSync(
   new URL("../src/components/admin/project-list.tsx", import.meta.url),
+  "utf8",
+);
+const projectRowActions = readFileSync(
+  new URL("../src/components/admin/project-row-actions.tsx", import.meta.url),
   "utf8",
 );
 const mediaPage = readFileSync(
@@ -159,6 +167,34 @@ describe("media permanent deletion contracts", () => {
     expect(mediaDeleteComponent).toContain('pending ? "삭제 중…"');
     expect(mediaDeleteComponent).toContain('state.status === "success"');
     expect(mediaDeleteComponent).toContain("<ContentActionMessage state={state} />");
+  });
+});
+
+describe("project admin performance and deletion contracts", () => {
+  const deleteAction = contentActions.slice(
+    contentActions.indexOf("export async function deleteProjectAction"),
+    contentActions.indexOf("function mediaPayload"),
+  );
+
+  it("목록에서는 상세 본문을 제외한 필드만 조회한다", () => {
+    const listQuery = contentAdminRepository.slice(
+      contentAdminRepository.indexOf("export async function listAdminProjects"),
+      contentAdminRepository.indexOf("export async function getAdminProject"),
+    );
+
+    expect(listQuery).not.toContain('.select("*")');
+    expect(listQuery).not.toContain("challenge");
+    expect(listQuery).not.toContain("role_description");
+    expect(listQuery).not.toContain("approach");
+    expect(listQuery).not.toContain("outcome");
+  });
+
+  it("서버 확인값을 검증하고 Storage 파일을 DB 기록보다 먼저 삭제한다", () => {
+    expect(deleteAction).toContain('formData.get("confirmed") !== "true"');
+    expect(deleteAction.indexOf('.from("wds-media")')).toBeLessThan(
+      deleteAction.indexOf(".delete()"),
+    );
+    expect(projectRowActions).toContain('name="confirmed" value="true"');
   });
 });
 

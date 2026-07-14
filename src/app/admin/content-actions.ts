@@ -213,6 +213,10 @@ export async function deleteProjectAction(
   try {
     const { client } = await requireAdminAction();
     const id = uuidSchema.parse(formData.get("id"));
+    if (formData.get("confirmed") !== "true") {
+      return { status: "error", message: "삭제 확인이 필요합니다." };
+    }
+
     const [{ data: project, error: projectError }, { data: media, error: mediaError }] = await Promise.all([
       client.from("portfolio_projects").select("slug").eq("id", id).maybeSingle(),
       client.from("media_assets").select("storage_path").eq("project_id", id),
@@ -220,23 +224,37 @@ export async function deleteProjectAction(
     if (projectError || !project) throw projectError ?? new Error("project_not_found");
     if (mediaError) throw mediaError;
 
+    const storagePaths = (media ?? []).flatMap((item) => (
+      typeof item.storage_path === "string" ? [item.storage_path] : []
+    ));
+    if (storagePaths.length > 0) {
+      const { error: storageError } = await client.storage
+        .from("wds-media")
+        .remove(storagePaths);
+      if (storageError) {
+        return {
+          status: "error",
+          message: "연결된 파일 삭제에 실패해 프로젝트 기록을 유지했습니다. 잠시 후 다시 시도해 주세요.",
+        };
+      }
+    }
+
     const { data: deleted, error: deleteError } = await client
       .from("portfolio_projects")
       .delete()
       .eq("id", id)
       .select("id")
       .maybeSingle();
-    if (deleteError || !deleted) throw deleteError ?? new Error("project_delete_failed");
+    if (deleteError || !deleted) {
+      return {
+        status: "error",
+        message: storagePaths.length > 0
+          ? "파일은 삭제했지만 프로젝트 기록 정리에 실패했습니다. 다시 시도하면 남은 기록을 정리합니다."
+          : "프로젝트 기록을 삭제하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+      };
+    }
 
-    const storagePaths = (media ?? []).flatMap((item) => (
-      typeof item.storage_path === "string" ? [item.storage_path] : []
-    ));
-    const [cleanupResult, orderNormalized] = await Promise.all([
-      storagePaths.length > 0
-        ? client.storage.from("wds-media").remove(storagePaths)
-        : Promise.resolve({ error: null }),
-      normalizeProjectSortOrders(client),
-    ]);
+    const orderNormalized = await normalizeProjectSortOrders(client);
 
     revalidatePath("/admin/projects");
     revalidatePath("/admin/media");
@@ -244,9 +262,6 @@ export async function deleteProjectAction(
     revalidatePath(`/work/${project.slug}`);
     revalidatePath("/");
 
-    if (cleanupResult.error) {
-      return { status: "success", message: "프로젝트를 삭제했습니다. 비공개 Storage 파일 정리 상태는 관리자에서 다시 확인해 주세요." };
-    }
     return orderNormalized
       ? { status: "success", message: "프로젝트를 삭제했습니다." }
       : { status: "success", message: "프로젝트를 삭제했지만 노출 순서 자동 정리에 실패했습니다. 순서를 확인해 주세요." };
