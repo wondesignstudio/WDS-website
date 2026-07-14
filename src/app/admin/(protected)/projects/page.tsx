@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { ProjectEditor } from "@/components/admin/project-editor";
+import { ProjectRowActions } from "@/components/admin/project-row-actions";
 import { getAdminAccess } from "@/lib/auth/admin";
 import { listAdminProjects } from "@/lib/content/admin";
 
@@ -27,13 +28,14 @@ export default async function AdminProjectsPage() {
           <p className="px-6 py-12 text-center text-zinc-500">등록된 프로젝트가 없습니다.</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] border-collapse text-left text-sm">
+            <table className="w-full min-w-[880px] border-collapse text-left text-sm">
               <thead className="bg-zinc-50 text-zinc-500">
                 <tr>
                   <th className="px-5 py-3 font-semibold">순서</th>
                   <th className="px-5 py-3 font-semibold">프로젝트</th>
                   <th className="px-5 py-3 font-semibold">유형</th>
                   <th className="px-5 py-3 font-semibold">공개 상태</th>
+                  <th className="px-5 py-3 font-semibold">관리</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100">
@@ -48,6 +50,9 @@ export default async function AdminProjectsPage() {
                     <td className="px-5 py-4">
                       <span className="font-semibold">{project.isPublished ? "목록 공개" : "비공개"}</span>
                       <p className="mt-1 text-zinc-500">{project.detailPublished ? "상세 공개" : "상세 비공개"}</p>
+                    </td>
+                    <td className="px-5 py-4">
+                      <ProjectRowActions id={project.id} title={project.title} />
                     </td>
                   </tr>
                 ))}

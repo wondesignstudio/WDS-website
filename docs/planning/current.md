@@ -39,7 +39,7 @@
 - [x] Vercel Preview 환경 변수 13개 등록
 - [x] Vercel Preview의 `SUPABASE_SERVICE_ROLE_KEY`를 전체 운영 값으로 교체
 - [x] Preview OAuth 콜백에서 불필요한 쿼리를 제거하고 Preview 와일드카드 URL 등록
-- [x] 최신 Preview 배포 생성: `https://wds-website-m007undkq-wondesign01-6115s-projects.vercel.app`
+- [x] 최신 Preview 배포 생성: `https://wds-website-k0hs02e6m-wondesign01-6115s-projects.vercel.app`
 - [x] 권한 nameserver가 아임웹 `ens1–4.hostcocoa.com`이고 GoDaddy에서는 AWS 외부 DNS로 표시되는 상태 확인
 - [x] Resend Tokyo 리전의 DKIM·SPF·MX·선택 DMARC 전환 항목 기록
 - [x] 실제 처리 흐름과 2026 개인정보 처리방침 작성지침을 반영한 공개 문안·동의 버전 확정
@@ -60,6 +60,7 @@
 - [x] 최신 Preview에서 공개 Home·Work·개인정보처리방침과 관리자 프로젝트·미디어·법적 문서 화면을 데스크톱·모바일 검수
 - [x] Questboard 공개 상세 404 수정, 프로젝트별 이미지 업로드와 서식 편집기·미리보기 Preview 검수
 - [x] 관리자 페이지 전환 로딩과 프로젝트 등록·편집 폼 이탈 방지 모달 구현 및 Preview 검수
+- [x] 프로젝트 관리 테이블 수정·삭제 액션과 연결 미디어 연쇄 삭제 구현
 - [x] 공개·관리자 본문과 폼 컨트롤 계산값 `14px`, 모바일 가로 오버플로 0, 브라우저 오류·경고 0 확인
 - [x] 최신 Preview 홈·`robots.txt`·`sitemap.xml` HTTP 200 확인
 - [x] 최신 Preview 문의 API의 미지원 콘텐츠 타입 415, 멱등키 누락 400, 허니팟 무응답 성공 200 확인

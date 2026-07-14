@@ -24,6 +24,13 @@ const detailPublicationMigration = readFileSync(
   ),
   "utf8",
 );
+const projectDeleteMigration = readFileSync(
+  new URL(
+    "../supabase/migrations/202607140003_project_media_delete_cascade.sql",
+    import.meta.url,
+  ),
+  "utf8",
+);
 
 describe("content admin migration security contracts", () => {
   it("프로젝트·미디어·법적 문서 모두 관리자 RLS를 강제한다", () => {
@@ -58,6 +65,11 @@ describe("content admin migration security contracts", () => {
     for (const slug of ["marketing-catnip", "timeattack", "questboard"]) {
       expect(detailPublicationMigration).toContain(`'${slug}'`);
     }
+  });
+
+  it("프로젝트 삭제 시 연결된 미디어 정보도 같은 DB 트랜잭션에서 삭제한다", () => {
+    expect(projectDeleteMigration).toContain("references public.portfolio_projects(id)");
+    expect(projectDeleteMigration).toContain("on delete cascade");
   });
 });
 

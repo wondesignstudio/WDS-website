@@ -179,6 +179,49 @@ export async function updateProjectAction(
   }
 }
 
+export async function deleteProjectAction(
+  _previous: ContentActionState,
+  formData: FormData,
+): Promise<ContentActionState> {
+  try {
+    const { client } = await requireAdminAction();
+    const id = uuidSchema.parse(formData.get("id"));
+    const [{ data: project, error: projectError }, { data: media, error: mediaError }] = await Promise.all([
+      client.from("portfolio_projects").select("slug").eq("id", id).maybeSingle(),
+      client.from("media_assets").select("storage_path").eq("project_id", id),
+    ]);
+    if (projectError || !project) throw projectError ?? new Error("project_not_found");
+    if (mediaError) throw mediaError;
+
+    const { data: deleted, error: deleteError } = await client
+      .from("portfolio_projects")
+      .delete()
+      .eq("id", id)
+      .select("id")
+      .maybeSingle();
+    if (deleteError || !deleted) throw deleteError ?? new Error("project_delete_failed");
+
+    const storagePaths = (media ?? []).flatMap((item) => (
+      typeof item.storage_path === "string" ? [item.storage_path] : []
+    ));
+    const cleanupResult = storagePaths.length > 0
+      ? await client.storage.from("wds-media").remove(storagePaths)
+      : { error: null };
+
+    revalidatePath("/admin/projects");
+    revalidatePath("/admin/media");
+    revalidatePath("/work");
+    revalidatePath(`/work/${project.slug}`);
+    revalidatePath("/");
+
+    return cleanupResult.error
+      ? { status: "success", message: "프로젝트를 삭제했습니다. 비공개 Storage 파일 정리 상태는 관리자에서 다시 확인해 주세요." }
+      : { status: "success", message: "프로젝트를 삭제했습니다." };
+  } catch (error) {
+    return contentActionError(error);
+  }
+}
+
 function mediaPayload(formData: FormData) {
   const projectId = text(formData, "projectId").trim() || null;
   return mediaMetadataInputSchema.parse({

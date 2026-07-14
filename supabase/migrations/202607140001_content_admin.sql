@@ -51,7 +51,7 @@ create table public.portfolio_projects (
 
 create table public.media_assets (
   id uuid primary key default gen_random_uuid(),
-  project_id uuid references public.portfolio_projects(id) on delete restrict,
+  project_id uuid references public.portfolio_projects(id) on delete cascade,
   kind text not null,
   storage_path text not null unique,
   original_name text not null,
