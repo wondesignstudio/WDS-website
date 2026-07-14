@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { signOutAdminAction } from "@/app/admin/actions";
+import { AdminNavigationFeedback } from "@/components/admin/admin-navigation-feedback";
 import { getAdminAccess } from "@/lib/auth/admin";
 
 export const dynamic = "force-dynamic";
@@ -60,6 +61,7 @@ export default async function ProtectedAdminLayout({
 
   return (
     <>
+      <AdminNavigationFeedback />
       <header className="border-b border-zinc-200 bg-white">
         <div className="mx-auto max-w-7xl px-6 py-4">
           <div className="flex items-center justify-between gap-4">

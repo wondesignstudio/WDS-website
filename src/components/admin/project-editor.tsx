@@ -1,22 +1,104 @@
 "use client";
 
-import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { useActionState, useCallback, useEffect, useRef, useState } from "react";
 
 import { createProjectAction, updateProjectAction } from "@/app/admin/content-actions";
-import type { ManagedProject } from "@/lib/content/types";
+import type { ContentActionState, ManagedProject } from "@/lib/content/types";
+import {
+  ADMIN_NAVIGATION_BLOCKED_EVENT,
+  ADMIN_NAVIGATION_START_EVENT,
+} from "@/lib/admin/navigation-events";
 
 import { ContentActionMessage } from "./content-action-message";
 import { MarkdownEditor } from "./markdown-editor";
+import { UnsavedChangesDialog } from "./unsaved-changes-dialog";
 
 const initialState = { status: "idle" } as const;
 
 export function ProjectEditor({ project }: { project?: ManagedProject }) {
+  const router = useRouter();
   const action = project ? updateProjectAction : createProjectAction;
-  const [state, formAction, pending] = useActionState(action, initialState);
+  const [dirty, setDirty] = useState(false);
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
+  const dirtyRef = useRef(false);
+
+  const markDirty = useCallback(() => {
+    dirtyRef.current = true;
+    setDirty(true);
+  }, []);
+
+  const clearDirty = useCallback(() => {
+    dirtyRef.current = false;
+    setDirty(false);
+  }, []);
+
+  const guardedAction = useCallback(async (
+    previousState: ContentActionState,
+    formData: FormData,
+  ) => {
+    const result = await action(previousState, formData);
+    if (result.status === "success") clearDirty();
+    return result;
+  }, [action, clearDirty]);
+
+  const [state, formAction, pending] = useActionState(guardedAction, initialState);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (!dirtyRef.current || pending) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    const handleNavigationClick = (event: MouseEvent) => {
+      if (
+        !dirtyRef.current
+        || pending
+        || event.button !== 0
+        || event.metaKey
+        || event.ctrlKey
+        || event.shiftKey
+        || event.altKey
+        || !(event.target instanceof Element)
+      ) {
+        return;
+      }
+
+      const anchor = event.target.closest<HTMLAnchorElement>("a[href]");
+      if (!anchor || anchor.target === "_blank" || anchor.hasAttribute("download")) return;
+
+      const destination = new URL(anchor.href, window.location.href);
+      if (destination.origin !== window.location.origin || destination.href === window.location.href) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      window.dispatchEvent(new Event(ADMIN_NAVIGATION_BLOCKED_EVENT));
+      setPendingHref(`${destination.pathname}${destination.search}${destination.hash}`);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("click", handleNavigationClick, true);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("click", handleNavigationClick, true);
+    };
+  }, [pending]);
+
+  const stayOnPage = useCallback(() => setPendingHref(null), []);
+  const leavePage = useCallback(() => {
+    if (!pendingHref) return;
+    const destination = pendingHref;
+    clearDirty();
+    setPendingHref(null);
+    window.dispatchEvent(new Event(ADMIN_NAVIGATION_START_EVENT));
+    router.push(destination);
+  }, [clearDirty, pendingHref, router]);
 
   return (
-    <form action={formAction} className="mt-8 space-y-8">
-      {project ? <input type="hidden" name="id" value={project.id} /> : null}
+    <>
+      <form action={formAction} className="mt-8 space-y-8" onChangeCapture={markDirty}>
+        {project ? <input type="hidden" name="id" value={project.id} /> : null}
 
       <section className="grid gap-5 rounded-2xl border border-zinc-200 bg-white p-6 md:grid-cols-2">
         <label className="text-sm font-semibold text-zinc-700">
@@ -104,15 +186,18 @@ export function ProjectEditor({ project }: { project?: ManagedProject }) {
           ["roleDescription", "WDS의 역할", project?.roleDescription],
           ["approach", "접근 방식", project?.approach],
           ["outcome", "결과", project?.outcome],
-        ].map(([name, label, value]) => <MarkdownEditor key={name} name={name ?? ""} label={label ?? ""} defaultValue={value ?? ""} />)}
+        ].map(([name, label, value]) => <MarkdownEditor key={name} name={name ?? ""} label={label ?? ""} defaultValue={value ?? ""} onDirty={markDirty} />)}
       </section>
 
       <div className="flex items-center gap-4">
         <button className="rounded-lg bg-zinc-950 px-5 py-3 text-sm font-semibold text-white disabled:opacity-50" type="submit" disabled={pending}>
           {pending ? "저장 중…" : project ? "프로젝트 저장" : "프로젝트 추가"}
         </button>
+        {dirty ? <span className="text-sm font-semibold text-zinc-500" role="status">저장되지 않은 변경사항</span> : null}
       </div>
-      <ContentActionMessage state={state} />
-    </form>
+        <ContentActionMessage state={state} />
+      </form>
+      <UnsavedChangesDialog open={pendingHref !== null} onStay={stayOnPage} onLeave={leavePage} />
+    </>
   );
 }

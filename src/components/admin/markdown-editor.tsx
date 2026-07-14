@@ -9,6 +9,7 @@ type MarkdownEditorProps = {
   label: string;
   defaultValue?: string;
   maxLength?: number;
+  onDirty?: () => void;
 };
 
 export function MarkdownEditor({
@@ -16,6 +17,7 @@ export function MarkdownEditor({
   label,
   defaultValue = "",
   maxLength = 5_000,
+  onDirty,
 }: MarkdownEditorProps) {
   const id = useId();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -33,6 +35,7 @@ export function MarkdownEditor({
       : `${before}${selected}${after}`;
     const next = `${value.slice(0, start)}${replacement}${value.slice(end)}`;
     setValue(next.slice(0, maxLength));
+    onDirty?.();
     queueMicrotask(() => {
       textarea.focus();
       textarea.setSelectionRange(start, Math.min(start + replacement.length, maxLength));
@@ -63,7 +66,10 @@ export function MarkdownEditor({
             className="min-h-48 w-full rounded-b-lg border border-zinc-300 px-4 py-3 font-normal leading-7"
             name={name}
             value={value}
-            onChange={(event) => setValue(event.target.value)}
+            onChange={(event) => {
+              setValue(event.target.value);
+              onDirty?.();
+            }}
             maxLength={maxLength}
           />
           <span className="mt-2 block font-normal text-zinc-500">소제목, 굵은 글씨, 목록과 링크를 사용할 수 있습니다. HTML은 실행되지 않습니다.</span>
