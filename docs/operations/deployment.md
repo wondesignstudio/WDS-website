@@ -60,7 +60,7 @@ NEXT_PUBLIC_PUBLISH_MARKETING_CATNIP=false
 - `EMAIL_SUBJECT_PREFIX`는 Preview에서 `[PREVIEW] `, Production에서는 빈 값으로 둡니다.
 - Hobby 배포에서는 이메일 재시도 cron을 매일 00:00 UTC에 실행합니다. 더 짧은 재시도 주기가 필요하면 Pro 전환 후 일정을 조정합니다.
 
-2026-07-14 확인 기준 Preview에는 13개 환경변수가 등록되어 있으나 Production에는 등록된 환경변수가 없습니다. Production 배포 전 Preview 값을 복제하되 `NEXT_PUBLIC_SITE_URL`은 `https://wondesign.studio`, `EMAIL_SUBJECT_PREFIX`는 빈 값으로 분리하고, 비밀 값은 로컬 파일이나 로그로 출력하지 않습니다.
+2026-07-14 확인 기준 Preview와 Production에 각각 13개 환경변수가 등록되어 있습니다. Production은 Preview 값을 복제하되 `NEXT_PUBLIC_SITE_URL`을 `https://wondesign.studio`, `EMAIL_SUBJECT_PREFIX`를 빈 값으로 분리했으며, 복제 과정에서 비밀 값을 로컬 파일이나 로그에 출력하지 않았습니다.
 
 ## 5. Preview 검수
 
@@ -81,7 +81,9 @@ NEXT_PUBLIC_PUBLISH_MARKETING_CATNIP=false
 
 아임웹 권한 DNS에서는 Resend용 임의 TXT·MX 레코드 편집 경로가 제공되지 않았습니다. 따라서 Resend 인증은 GoDaddy 기본 nameserver 전환, Vercel 레코드 설정과 같은 유지보수 창에서 함께 처리합니다.
 
-2026-07-14 확인 기준 `wondesign.studio`와 `www.wondesign.studio`는 아직 `wds-website` Vercel 프로젝트에 추가되지 않았습니다.
+2026-07-14 확인 기준 `wondesign.studio`와 `www.wondesign.studio`는 `wds-website` Vercel 프로젝트에 추가되었습니다. 권한 DNS는 아직 기존 값을 유지하므로 두 도메인의 Vercel 검증은 대기 중입니다. Vercel이 안내한 전환용 레코드는 root와 `www` 각각 `A 76.76.21.21`이며, 실제 변경은 Resend 레코드 준비와 출시 승인 뒤 한 번의 유지보수 창에서 진행합니다.
+
+프로젝트 배포 보호는 custom domain을 제외한 표준 보호로 설정되어 있습니다. 따라서 `*.vercel.app` 생성 주소는 Vercel 로그인으로 보호되지만 DNS 검증이 끝난 `wondesign.studio`와 `www.wondesign.studio`는 공개됩니다.
 
 ## 7. 출시 후 확인
 
