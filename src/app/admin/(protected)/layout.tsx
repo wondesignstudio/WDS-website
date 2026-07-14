@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { signOutAdminAction } from "@/app/admin/actions";
-import { AdminNavigationFeedback } from "@/components/admin/admin-navigation-feedback";
+import { AdminShell } from "@/components/admin/admin-shell";
 import { getAdminAccess } from "@/lib/auth/admin";
 
 export const dynamic = "force-dynamic";
@@ -60,44 +59,8 @@ export default async function ProtectedAdminLayout({
   }
 
   return (
-    <>
-      <AdminNavigationFeedback />
-      <header className="border-b border-zinc-200 bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <Link className="font-semibold tracking-tight" href="/admin/inquiries">
-              WDS Admin
-            </Link>
-            <div className="flex items-center gap-4 text-sm">
-              <span className="hidden text-zinc-500 sm:inline">
-                {access.user.email}
-              </span>
-              <form action={signOutAdminAction}>
-                <button className="font-medium text-zinc-700 hover:text-zinc-950">
-                  로그아웃
-                </button>
-              </form>
-            </div>
-          </div>
-          <nav className="mt-4 overflow-x-auto" aria-label="관리자 메뉴">
-            <ul className="flex min-w-max gap-1 text-sm font-semibold">
-              {[
-                ["/admin/inquiries", "문의"],
-                ["/admin/projects", "프로젝트"],
-                ["/admin/media", "미디어"],
-                ["/admin/legal", "법적 문서"],
-              ].map(([href, label]) => (
-                <li key={href}>
-                  <Link className="block rounded-lg px-3 py-2 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950" href={href}>
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-      </header>
+    <AdminShell email={access.user.email ?? "관리자"}>
       {children}
-    </>
+    </AdminShell>
   );
 }
