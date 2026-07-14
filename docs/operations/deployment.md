@@ -37,9 +37,9 @@ on conflict (email) do update set enabled = true;
 3. 발신자는 `WDS <contact@wondesign.studio>`로 설정합니다.
 4. 내부 알림에는 문의 원문을 복제하지 않고 문의 ID와 인증된 관리자 링크만 포함됩니다.
 
-현재 Resend Tokyo 리전이 요구하는 공개 DNS 항목은 다음과 같습니다. DKIM 본문은 회전될 수 있으므로 전환 직전에 Resend 화면의 값을 다시 복사합니다.
+2026-07-14 Resend 대시보드 확인 기준 상태는 `Not Started`이며 Tokyo 리전이 요구하는 공개 DNS 항목은 다음과 같습니다. DKIM 본문은 회전될 수 있으므로 전환 직전에 Resend 화면의 값과 다시 대조합니다.
 
-- `TXT` `resend._domainkey`: Resend 화면의 DKIM 공개키
+- `TXT` `resend._domainkey`: `p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDRIFIfDx4Y0TEw5GdP/5Ywgspp6FDvmWjNQV1ct7OXBKCiOu7BfZ73vK/0UEC4gryB6F/WZ7P+nRdC7VQmaFMPSDRxJBsKPrcSxIf7KmaMQ7GbaRZi4D+SBDEWl7TO3rGD3g9rH15S8UrDRN8Fyhmy9wNtW4NJxPwCOPsTv2gpNwIDAQAB`
 - `MX` `send`: `feedback-smtp.ap-northeast-1.amazonses.com`, priority `10`
 - `TXT` `send`: `v=spf1 include:amazonses.com ~all`
 - 선택 `TXT` `_dmarc`: `v=DMARC1; p=none;`

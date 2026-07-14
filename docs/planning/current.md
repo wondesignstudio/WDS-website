@@ -62,6 +62,7 @@
 - [x] 정상 Production 배포 생성: `https://wds-website-m90pndd72-wondesign01-6115s-projects.vercel.app`
 - [x] `wondesign.studio`와 `www.wondesign.studio`를 Vercel `wds-website` 프로젝트에 등록
 - [x] Vercel 배포 보호가 custom domain을 제외한 표준 보호로 설정되어 출시 도메인은 공개되는 상태 확인
+- [x] Resend 대시보드에서 Tokyo 리전 DKIM·SPF·MX·선택 DMARC 실제 값과 `Not Started` 상태 재확인
 
 ## 검증 결과
 
