@@ -7,7 +7,13 @@
 3. 기존 GA4 속성의 Measurement ID를 준비합니다.
 4. GoDaddy DNS 변경 전 현재 nameserver와 모든 DNS 레코드를 캡처해 복구 자료로 보관합니다.
 
-2026-07-13 확인 기준 권한 nameserver는 `ens1.hostcocoa.com`부터 `ens4.hostcocoa.com`까지이며, GoDaddy는 현재 DNS 공급자를 Amazon Web Services로 표시합니다. 이는 아임웹이 관리하는 DNS이므로 GoDaddy DNS 레코드 편집은 비활성 상태입니다. GoDaddy 기본 nameserver로 바꾸는 순간 사이트 DNS도 함께 전환되므로 Preview 승인 전에는 변경하지 않습니다.
+2026-07-14 재확인 기준 권한 nameserver는 `ens1.hostcocoa.com`부터 `ens4.hostcocoa.com`까지이며, GoDaddy는 현재 DNS 공급자를 Amazon Web Services로 표시합니다. 이는 아임웹이 관리하는 DNS이므로 GoDaddy DNS 레코드 편집은 비활성 상태입니다. GoDaddy 기본 nameserver로 바꾸는 순간 사이트 DNS도 함께 전환되므로 Preview 승인 전에는 변경하지 않습니다.
+
+전환 전 공개 DNS 복구 기준:
+
+- root `A`: `3.168.167.26`, `3.168.167.31`, `3.168.167.39`, `3.168.167.83`
+- `www` `A`: root와 동일한 네 주소
+- root와 `www`의 `AAAA`, root `MX`·`TXT`, `resend._domainkey` `TXT`, `send` `MX`·`TXT`, `_dmarc` `TXT`: 없음
 
 ## 2. Supabase
 
@@ -54,6 +60,8 @@ NEXT_PUBLIC_PUBLISH_MARKETING_CATNIP=false
 - `EMAIL_SUBJECT_PREFIX`는 Preview에서 `[PREVIEW] `, Production에서는 빈 값으로 둡니다.
 - Hobby 배포에서는 이메일 재시도 cron을 매일 00:00 UTC에 실행합니다. 더 짧은 재시도 주기가 필요하면 Pro 전환 후 일정을 조정합니다.
 
+2026-07-14 확인 기준 Preview에는 13개 환경변수가 등록되어 있으나 Production에는 등록된 환경변수가 없습니다. Production 배포 전 Preview 값을 복제하되 `NEXT_PUBLIC_SITE_URL`은 `https://wondesign.studio`, `EMAIL_SUBJECT_PREFIX`는 빈 값으로 분리하고, 비밀 값은 로컬 파일이나 로그로 출력하지 않습니다.
+
 ## 5. Preview 검수
 
 1. `npm run verify`를 통과합니다.
@@ -72,6 +80,8 @@ NEXT_PUBLIC_PUBLISH_MARKETING_CATNIP=false
 5. DNS 확인 후 HTTPS, root와 `www` 리디렉션, canonical, sitemap과 robots를 공개 URL에서 확인합니다.
 
 아임웹 권한 DNS에서는 Resend용 임의 TXT·MX 레코드 편집 경로가 제공되지 않았습니다. 따라서 Resend 인증은 GoDaddy 기본 nameserver 전환, Vercel 레코드 설정과 같은 유지보수 창에서 함께 처리합니다.
+
+2026-07-14 확인 기준 `wondesign.studio`와 `www.wondesign.studio`는 아직 `wds-website` Vercel 프로젝트에 추가되지 않았습니다.
 
 ## 7. 출시 후 확인
 
