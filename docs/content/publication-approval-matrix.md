@@ -1,7 +1,7 @@
 # WDS 웹사이트 공개 승인·사실 검증 매트릭스
 
-> 문서 상태: Phase 0 초안  
-> 기준 기획서: [`../source/WDS_Website_Planning_v0.1.md`](../source/WDS_Website_Planning_v0.1.md)  
+> 문서 상태: Phase 0 초안
+> 기준 기획서: [`../source/WDS_Website_Planning_v0.1.md`](../source/WDS_Website_Planning_v0.1.md)
 > 목적: 웹사이트에 노출되는 프로젝트, 고객명, 로고, 화면, 추천사, 성과 수치, 브랜드 자산의 공개 권리와 사실성을 출시 전에 추적하고 승인한다.
 
 ## 1. 운영 원칙

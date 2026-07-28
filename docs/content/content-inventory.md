@@ -1,7 +1,7 @@
 # WDS 웹사이트 Phase 0 콘텐츠·에셋 인벤토리
 
-> 기준 문서: [`../source/WDS_Website_Planning_v0.1.md`](../source/WDS_Website_Planning_v0.1.md)  
-> 범위: 초기 공개 MVP  
+> 기준 문서: [`../source/WDS_Website_Planning_v0.1.md`](../source/WDS_Website_Planning_v0.1.md)
+> 범위: 초기 공개 MVP
 > 목적: 개발 전에 필요한 문구, 프로젝트 근거, 이미지, 로고, 법적 문서와 운영 정보를 빠짐없이 수집하고 공개 승인을 기록한다.
 
 ## 1. 사용 원칙
