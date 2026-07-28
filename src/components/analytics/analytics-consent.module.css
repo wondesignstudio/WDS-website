@@ -1,0 +1,61 @@
+.banner {
+  position: fixed;
+  z-index: 100;
+  right: clamp(1rem, 3vw, 2.5rem);
+  bottom: clamp(1rem, 3vw, 2.5rem);
+  display: grid;
+  gap: 1.25rem;
+  width: min(34rem, calc(100vw - 2rem));
+  padding: 1.25rem;
+  color: #fff;
+  background: #000;
+  border: 1px solid #fff;
+  box-shadow: 0 1rem 3rem rgb(0 0 0 / 18%);
+}
+
+.banner p {
+  margin: 0;
+  font-size: var(--type-body);
+  line-height: 1.65;
+}
+
+.banner a {
+  color: inherit;
+  text-underline-offset: 0.2em;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.625rem;
+}
+
+.actions button {
+  min-height: 2.75rem;
+  padding: 0.625rem 1rem;
+  color: #fff;
+  font: inherit;
+  font-size: var(--type-label);
+  font-weight: 700;
+  background: transparent;
+  border: 1px solid rgb(255 255 255 / 45%);
+  cursor: pointer;
+}
+
+.actions button:hover,
+.actions button:focus-visible {
+  border-color: #fff;
+}
+
+.actions .accept {
+  color: #000;
+  background: #ff5c00;
+  border-color: #ff5c00;
+}
+
+@media (max-width: 38rem) {
+  .actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+}
