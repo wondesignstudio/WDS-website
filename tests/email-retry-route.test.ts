@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   isAuthorizedCronRequest: vi.fn(() => true),
   processPendingEmailDeliveries: vi.fn(),
+  startCronRun: vi.fn(),
+  completeCronRun: vi.fn(),
 }));
 
 vi.mock("@/lib/auth/cron", async () => {
@@ -17,6 +19,11 @@ vi.mock("@/lib/auth/cron", async () => {
 
 vi.mock("@/lib/email/outbox", () => ({
   processPendingEmailDeliveries: mocks.processPendingEmailDeliveries,
+}));
+
+vi.mock("@/lib/operations/cron-runs", () => ({
+  startCronRun: mocks.startCronRun,
+  completeCronRun: mocks.completeCronRun,
 }));
 
 import { GET } from "@/app/api/cron/email-retry/route";
@@ -34,6 +41,8 @@ describe("email retry cron", () => {
   beforeEach(() => {
     mocks.isAuthorizedCronRequest.mockReturnValue(true);
     mocks.processPendingEmailDeliveries.mockResolvedValue(successResult);
+    mocks.startCronRun.mockResolvedValue(12);
+    mocks.completeCronRun.mockResolvedValue(undefined);
   });
 
   it("해결되지 않은 최종 실패가 없으면 성공한다", async () => {
@@ -41,6 +50,14 @@ describe("email retry cron", () => {
 
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toMatchObject({ ok: true });
+    expect(mocks.completeCronRun).toHaveBeenCalledWith(
+      12,
+      "email_retry",
+      "succeeded",
+      200,
+      successResult,
+      null,
+    );
   });
 
   it("최종 실패가 남아 있으면 non-2xx로 운영 실패를 드러낸다", async () => {
@@ -74,5 +91,6 @@ describe("email retry cron", () => {
 
     expect(response.status).toBe(401);
     expect(mocks.processPendingEmailDeliveries).not.toHaveBeenCalled();
+    expect(mocks.startCronRun).not.toHaveBeenCalled();
   });
 });

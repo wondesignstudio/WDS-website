@@ -11,7 +11,7 @@ import { AdminNavigationFeedback } from "@/components/admin/admin-navigation-fee
 type NavigationItem = {
   href: string;
   label: string;
-  icon: "inquiries" | "projects" | "media" | "legal";
+  icon: "inquiries" | "projects" | "media" | "legal" | "operations";
 };
 
 const navigationItems: NavigationItem[] = [
@@ -19,6 +19,7 @@ const navigationItems: NavigationItem[] = [
   { href: "/admin/projects", label: "프로젝트", icon: "projects" },
   { href: "/admin/media", label: "미디어", icon: "media" },
   { href: "/admin/legal", label: "법적 문서", icon: "legal" },
+  { href: "/admin/operations", label: "운영 상태", icon: "operations" },
 ];
 
 function NavigationIcon({ name }: { name: NavigationItem["icon"] }) {
@@ -46,10 +47,18 @@ function NavigationIcon({ name }: { name: NavigationItem["icon"] }) {
     );
   }
 
+  if (name === "legal") {
+    return (
+      <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3.75h7.69c.6 0 1.17.24 1.59.66l2.31 2.31c.42.42.66.99.66 1.59v11.94H6.75A2.25 2.25 0 0 1 4.5 18V6a2.25 2.25 0 0 1 2.25-2.25Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 3.75V7.5h3.75M8.25 12h7.5m-7.5 3.25h5.25" />
+      </svg>
+    );
+  }
+
   return (
     <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3.75h7.69c.6 0 1.17.24 1.59.66l2.31 2.31c.42.42.66.99.66 1.59v11.94H6.75A2.25 2.25 0 0 1 4.5 18V6a2.25 2.25 0 0 1 2.25-2.25Z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 3.75V7.5h3.75M8.25 12h7.5m-7.5 3.25h5.25" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 18.75V12m5.25 6.75V7.5M15 18.75v-4.5m4.5 4.5V4.5" />
     </svg>
   );
 }
