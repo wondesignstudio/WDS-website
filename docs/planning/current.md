@@ -2,10 +2,11 @@
 
 ## 활성 마일스톤
 
-- 마일스톤: `M5–M6 — 통합 검증·출시 준비`
-- 상태: `RESEND_DNS_PENDING`
-- 기준일: 2026-07-28
-- 구현 코드 상태: 공개 사이트·문의·관리자 기능, 로컬 QA와 최신 Vercel Preview 빌드 완료; 실제 문의 저장·중복 방지·이메일 큐·관리자 허용/차단과 비공개 프로젝트·미디어 생성·삭제 E2E 통과, Resend 도메인 DNS 인증 후 실메일 재검증 필요
+- 마일스톤: `M7 — Production 운영 안정화·공개 콘텐츠 준비`
+- 상태: `PRODUCTION_LIVE_FOLLOWUP`
+- 기준일: 2026-08-02
+- 운영 상태: `https://wondesign.studio` Production 출시 완료. DNS·HTTPS·Resend·GA4·관리자 로그인·문의 저장 및 실메일 수신은 24시간 후 읽기 전용 점검까지 정상입니다.
+- 확인 제한: Vercel Cron 두 작업은 활성화되어 있으나 Hobby 플랜의 현재 로그 조회 범위가 최대 1시간이라 예정 실행 시각의 이력을 소급 확인하지 못했습니다. 실패 outbox는 없으며 수동 실행은 하지 않았습니다.
 
 ## 완료
 
@@ -87,12 +88,12 @@
 - [x] 허용 관리자 Google 로그인·목록·상세 조회와 비허용 계정 차단 확인
 - [x] Cron 비인가 요청 401, 허니팟 200 무저장과 DB 1건 유지 확인
 - [x] 비공개 테스트 프로젝트가 공개 상세에서 404로 차단되고, 삭제 후 프로젝트 3건·미디어 0건으로 복귀한 상태 확인
-- [ ] Resend DNS 인증 후 내부 알림·고객 확인 메일 실제 발송 확인
+- [x] Resend DNS 인증 후 내부 알림·고객 확인 메일 실제 발송 확인
 
-## 출시 전 외부 작업
+## 운영 후 남은 작업
 
 - [x] Supabase 프로젝트 생성, migration 적용, Google OAuth와 관리자 허용 목록 설정
-- [ ] Resend에서 `wondesign.studio` 발신 도메인 검증
+- [x] Resend에서 `wondesign.studio` 발신 도메인 검증
 - [x] Supabase에 `202607140001_content_admin.sql` 적용
 - [x] 운영 관리자 Google 로그인과 프로젝트·미디어·법적 문서 목록·편집 화면 접근 확인
 - [x] 기본 프로젝트 3건의 상세 공개 상태 보정 및 Questboard 공개 상세 404 해소
@@ -108,15 +109,15 @@
 - [x] 개인정보처리방침 공식 지침 기반 운영 검토와 공개 문안 확정
 - [ ] 공개 승인된 프로젝트 화면·고객 로고 반영
 - [x] Preview에서 실제 문의 1건의 저장·이메일 큐·관리자 조회 검증
-- [ ] Resend DNS 인증 후 운영자 알림·고객 확인 메일 발송 및 재처리 검증
+- [x] Resend DNS 인증 후 운영자 알림·고객 확인 메일 발송 확인
+- [ ] 다음 Cron 예정 실행 직후 `/api/cron/email-retry`와 `/api/cron/retention` HTTP 성공 로그 확인 또는 별도 운영 모니터링 구성
 - [x] `wondesign.studio`와 `www.wondesign.studio`를 Vercel `wds-website` 프로젝트에 추가
-- [ ] GoDaddy DNS를 Vercel로 전환하고 root를 canonical로, `www`를 root로 리디렉션
+- [x] GoDaddy DNS를 Vercel로 전환하고 root를 canonical로, `www`를 root로 리디렉션
 
-## 출시 차단 조건
+## 현재 잔여 작업 및 운영 주의사항
 
-- Resend 도메인 DNS가 검증되지 않아 발신 메일을 보장할 수 없는 상태
-- 현재 아임웹 권한 DNS에서는 임의 Resend 레코드를 편집할 수 없어 GoDaddy nameserver 전환과 함께 인증해야 하는 상태
-- Resend 인증 후 실제 문의의 알림·확인 메일과 재처리 성공을 확인하지 않은 상태
-- 법적 문서 발행 E2E를 Preview 관리자에서 확인하지 않은 상태
-- 공개 승인이 없는 고객 자산 또는 프로젝트 상세가 노출된 상태
-- Production 도메인·HTTPS·canonical·robots·sitemap을 확인하지 않은 상태
+- 현재 Production 출시 차단 항목은 없습니다.
+- `/terms`는 관리자에서 최종 이용약관을 발행하기 전까지 의도적으로 404를 유지합니다.
+- 프로젝트 이미지·고객 로고·성과 주장·추천사는 공개 승인 후 관리자에서 등록·발행합니다.
+- Cron 설정은 활성 상태지만 정확한 실행 성공 이력은 Hobby 로그 보존 범위 때문에 미확인입니다. 다음 예정 실행 직후 1시간 안에 확인하거나 외부 모니터링을 추가합니다.
+- Google Workspace 구독·도메인·관리자 소유 상태는 사이트 출시와 별개의 읽기 전용 확인 과제로 남아 있습니다.
