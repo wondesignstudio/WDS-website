@@ -33,6 +33,15 @@ function storedInquiry(
 }
 
 describe("email templates", () => {
+  it.each(["", "[WDS]", " [wds] "])("브랜드 접두사를 중복하지 않는다: %s", (prefix) => {
+    expect(renderConfirmation(storedInquiry(), prefix).subject).toBe("[WDS] 상담 문의가 접수되었습니다");
+    expect(renderInternalNotification(storedInquiry(), "https://wondesign.studio/admin", prefix).subject).toBe("[WDS 문의] 새 상담 요청 · 기업 웹사이트");
+  });
+
+  it("Preview 구분은 유지한다", () => {
+    expect(renderConfirmation(storedInquiry(), "[PREVIEW][WDS]").subject).toBe("[PREVIEW] [WDS] 상담 문의가 접수되었습니다");
+  });
+
   it("내부 알림에는 개인정보 원문을 넣지 않고 관리자 URL을 이스케이프한다", () => {
     const inquiry = storedInquiry({
       companyName: 'ACME <script>alert("company")</script> & Co',
