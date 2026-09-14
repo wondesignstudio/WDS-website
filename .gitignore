@@ -35,3 +35,6 @@ yarn-error.log*
 next-env.d.ts
 .vercel
 .env*.local
+
+# Private user-supplied planning reference; do not publish to the public repository.
+/docs/planning/future/admin-os-handoff-2026-09-03.md

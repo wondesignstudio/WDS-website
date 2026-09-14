@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/data/site";
 import { getPublishedLegalDocument, listPublishedProjects } from "@/lib/content/public";
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [projects, terms] = await Promise.all([
     listPublishedProjects(),

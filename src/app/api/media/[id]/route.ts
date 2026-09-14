@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { getAdminAccess } from "@/lib/auth/admin";
 import { getSupabaseServiceClient } from "@/lib/supabase/service";
+import { demoSvg, isDemoPreview } from "@/lib/content/demo";
 
 const idSchema = z.string().uuid();
 
@@ -11,6 +12,10 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: rawId } = await params;
+  if (isDemoPreview()) {
+    const svg = demoSvg(rawId);
+    if (svg) return new NextResponse(svg, { headers: { "Content-Type": "image/svg+xml", "Cache-Control": "no-store" } });
+  }
   const parsed = idSchema.safeParse(rawId);
   if (!parsed.success) return new NextResponse(null, { status: 404 });
 
