@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { trackEvent } from "@/lib/analytics/client";
+import { siteConfig } from "@/data/site";
 import {
   BUDGET_RANGE_OPTIONS,
   CONTACT_PRIVACY_POLICY_VERSION,
@@ -122,6 +123,7 @@ export function ContactForm() {
   const [state, setState] = useState<SubmitState>({ status: "idle" });
   const submissionRef = useRef<{ key: string; payload: string } | null>(null);
   const trackedStartRef = useRef(false);
+  const submittingRef = useRef(false);
   const formErrorRef = useRef<HTMLParagraphElement>(null);
   const successRef = useRef<HTMLElement>(null);
 
@@ -154,6 +156,7 @@ export function ContactForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submittingRef.current) return;
     const form = event.currentTarget;
     const parsed = contactInputSchema.safeParse(createPayload(form));
 
@@ -176,6 +179,7 @@ export function ContactForm() {
       };
     }
 
+    submittingRef.current = true;
     setState({ status: "submitting" });
 
     try {
@@ -186,6 +190,7 @@ export function ContactForm() {
           "Idempotency-Key": submissionRef.current.key,
         },
         body: serialized,
+        signal: AbortSignal.timeout(30000),
       });
       const result = (await response.json()) as {
         ok?: boolean;
@@ -219,6 +224,8 @@ export function ContactForm() {
         message: "입력한 내용은 유지됩니다. 네트워크 연결을 확인한 뒤 다시 시도해 주세요.",
       });
       focusFirstError(form);
+    } finally {
+      submittingRef.current = false;
     }
   }
 
@@ -234,7 +241,7 @@ export function ContactForm() {
         <h2>문의가 접수되었습니다.</h2>
         <p>
           전달해주신 내용을 검토한 뒤 다음 영업일 이내에 안내드리겠습니다. 접수
-          확인 메일도 함께 보내드렸습니다.
+          확인 메일은 순차적으로 발송됩니다. 메일이 보이지 않으면 스팸함도 확인해 주세요.
         </p>
         <button type="button" onClick={() => setState({ status: "idle" })}>
           다른 문의 작성
@@ -412,7 +419,7 @@ export function ContactForm() {
             {...fieldA11y(fieldErrors, "privacyConsent")}
           />
           <span>
-            <Link href="/privacy">개인정보처리방침</Link>을 확인했으며, 문의 처리에 필요한
+            <Link href="/privacy" target="_blank" rel="noopener noreferrer" aria-label="개인정보처리방침 (새 탭)">개인정보처리방침</Link>을 확인했으며, 문의 처리에 필요한
             개인정보 수집 및 이용에 동의합니다.
           </span>
         </label>
@@ -422,6 +429,7 @@ export function ContactForm() {
       {state.status === "error" ? (
         <p ref={formErrorRef} className={styles.formError} role="alert" tabIndex={-1}>
           {state.message}
+          {state.fieldErrors ? null : <><br />접수가 완료되었는지 확인이 필요하거나 문제가 계속되면 <a href={siteConfig.consultationPhone.href}>{siteConfig.consultationPhone.display}</a>로 연락해 주세요.</>}
         </p>
       ) : null}
 

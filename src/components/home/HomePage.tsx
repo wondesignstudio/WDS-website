@@ -125,37 +125,6 @@ function TextLink({
   );
 }
 
-function NeutralPreview({
-  tall = false,
-}: Readonly<{ tall?: boolean }>) {
-  return (
-    <div
-      aria-hidden="true"
-      className={`${styles.preview} ${tall ? styles.previewTall : ""}`}
-    >
-      <div className={styles.previewChrome} aria-hidden="true">
-        <span />
-        <span />
-        <span />
-        <i />
-      </div>
-      <div className={styles.previewBody} aria-hidden="true">
-        <div className={styles.previewHero} />
-        <div className={styles.previewRail}>
-          <span />
-          <span />
-          <span />
-        </div>
-        <div className={styles.previewRows}>
-          <span />
-          <span />
-          <span />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function Header() {
   return (
     <header className={styles.header}>
@@ -216,7 +185,16 @@ function Hero() {
           </div>
         </div>
         <div className={styles.heroVisual}>
-          <NeutralPreview />
+          <div className={styles.expertiseVisual} aria-label="사업 이해에서 설계, 디자인, 개발, 운영으로 이어지는 WDS의 업무 방식">
+            <div className={styles.expertiseTop}><span>WON DESIGN STUDIO</span><span className={styles.expertiseDot} /></div>
+            <p className={styles.expertiseTitle}>From idea.<br />To impact.</p>
+            <p className={styles.expertiseCaption}>좋은 아이디어가<br />실제로 작동하는 경험이 되도록.</p>
+            <ol className={styles.expertiseSteps}>
+              <li><span>01</span>사업 이해 · 구조 설계</li>
+              <li><span>02</span>브랜드 · UX/UI 디자인</li>
+              <li><span>03</span>개발 · 출시 · 운영</li>
+            </ol>
+          </div>
         </div>
       </div>
     </section>
@@ -251,54 +229,53 @@ function Challenge() {
   );
 }
 
-function ProjectPreview({ project, tall = false }: { project?: ManagedProject; tall?: boolean }) {
-  const media = project?.media[0];
-  if (!media) return <NeutralPreview tall={tall} />;
+function ProjectPreview({ project, mediaIndex = 0 }: { project?: ManagedProject; mediaIndex?: number }) {
+  const media = project?.media[mediaIndex];
+  if (!media) return null;
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img className={styles.managedProjectImage} src={`/api/media/${media.id}`} alt={media.altText} />
+    <img className={styles.managedProjectImage} src={`/api/media/${media.id}`} alt={media.altText} loading="lazy" decoding="async" />
   );
 }
 
 function FeaturedWork({ project }: { project?: ManagedProject }) {
+  if (!project) return null;
   const display = project;
   return (
     <section className={styles.featuredWork} aria-labelledby="featured-heading">
       <div className={`${styles.shell} ${styles.featuredGrid}`}>
         <div className={styles.featuredCopy}>
           <SectionLabel>FEATURED WORK</SectionLabel>
-          <p className={styles.projectName}>{display?.title ?? "Marketing Catnip"}</p>
+          <p className={styles.projectName}>{display.title}</p>
           <h2 id="featured-heading">
-            {display?.summary ?? "복잡한 B2B 마케팅 콘텐츠를 살아 있는 브랜드 경험으로 전환했습니다."}
+            {display.summary}
           </h2>
           <dl className={styles.projectMeta}>
-            <div>
+            {display.clientName ? <div>
               <dt>Client</dt>
-              <dd>{display?.clientName ?? "솔바인드9"}</dd>
-            </div>
+              <dd>{display.clientName}</dd>
+            </div> : null}
             <div>
               <dt>Project Type</dt>
-              <dd>{display?.type ?? "B2B Content Platform"}</dd>
+              <dd>{display.type}</dd>
             </div>
             <div>
               <dt>Scope</dt>
-              <dd>{display?.scopes.join(" · ") ?? "Planning · IA · UX/UI · Responsive Web · Admin Planning · QA"}</dd>
+              <dd>{display.scopes.join(" · ")}</dd>
             </div>
             <div>
               <dt>Status</dt>
-              <dd>{display?.status ?? "Launched"}</dd>
+              <dd>{display.status}</dd>
             </div>
           </dl>
-          <p className={styles.projectDescription}>
-            {display?.approach || "마케팅, CRM, AI, CX 관련 전문 콘텐츠를 체계적으로 전달할 수 있도록 사이트 구조를 설계했습니다. 캐릭터와 픽셀 그래픽, 인터랙션을 활용해 일반적인 B2B 콘텐츠 사이트와 다른 브랜드 경험을 만들었습니다."}
-          </p>
-          <TextLink href="/work">프로젝트 보기</TextLink>
+          {display.approach ? <p className={styles.projectDescription}>{display.approach}</p> : null}
+          <TextLink href={display.detailPublished ? `/work/${display.slug}` : "/work"}>프로젝트 보기</TextLink>
         </div>
         <div className={styles.featuredMedia}>
           <ProjectPreview project={display} />
-          <div className={styles.featuredSecondaryPreview}>
-            <ProjectPreview project={display} tall />
-          </div>
+          {display.media[1] ? <div className={styles.featuredSecondaryPreview}>
+            <ProjectPreview project={display} mediaIndex={1} />
+          </div> : null}
         </div>
       </div>
     </section>
@@ -306,6 +283,7 @@ function FeaturedWork({ project }: { project?: ManagedProject }) {
 }
 
 function SelectedWork({ projects }: { projects: ManagedProject[] }) {
+  if (projects.length === 0) return null;
   const timeAttack = projects[0];
   const questboard = projects[1];
   return (
@@ -315,7 +293,7 @@ function SelectedWork({ projects }: { projects: ManagedProject[] }) {
         <h2 id="selected-work-heading" className={styles.visuallyHidden}>
           주요 프로젝트
         </h2>
-        <article className={styles.timeAttack}>
+        {timeAttack ? <article className={styles.timeAttack}>
           <ProjectPreview project={timeAttack} />
           <div className={styles.selectedCopy}>
             <h3>{timeAttack?.title ?? "TimeAttack"}</h3>
@@ -325,12 +303,12 @@ function SelectedWork({ projects }: { projects: ManagedProject[] }) {
             <p className={styles.selectedMeta}>
               {timeAttack ? `${timeAttack.type} · ${timeAttack.scopes.join(" · ")} · ${timeAttack.status}` : "Corporate Website · Planning · UX/UI · Imweb Development · Launched"}
             </p>
-            <TextLink href="/work">프로젝트 보기</TextLink>
+            <TextLink href={timeAttack.detailPublished ? `/work/${timeAttack.slug}` : "/work"}>프로젝트 보기</TextLink>
           </div>
-        </article>
-        <article className={styles.questboard}>
+        </article> : null}
+        {questboard ? <article className={styles.questboard}>
           <div className={styles.questboardPreview}>
-            <ProjectPreview project={questboard} tall />
+            <ProjectPreview project={questboard} />
           </div>
           <div className={styles.selectedCopy}>
             <h3>{questboard?.title ?? "Questboard"}</h3>
@@ -340,9 +318,9 @@ function SelectedWork({ projects }: { projects: ManagedProject[] }) {
             <p className={styles.selectedMeta}>
               {questboard ? `${questboard.type} · ${questboard.scopes.join(" · ")} · ${questboard.status}` : "AI Education Product · Product Planning · UX/UI · Design System · Development Collaboration · Launched"}
             </p>
-            <TextLink href="/work">프로젝트 보기</TextLink>
+            <TextLink href={questboard.detailPublished ? `/work/${questboard.slug}` : "/work"}>프로젝트 보기</TextLink>
           </div>
-        </article>
+        </article> : null}
       </div>
     </section>
   );

@@ -138,7 +138,7 @@
   font-size: var(--type-display);
   font-weight: 720;
   letter-spacing: -0.065em;
-  line-height: 1.2;
+  line-height: var(--leading-heading, 1.35);
 }
 
 .heroDescription {
@@ -210,6 +210,15 @@
 .previewTall {
   aspect-ratio: 0.72 / 1;
 }
+
+.expertiseVisual { padding: clamp(28px, 4vw, 56px); background: #111; color: #fff; }
+.expertiseTop { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 14px; letter-spacing: 0.06em; }
+.expertiseDot { width: 12px; height: 12px; flex: 0 0 auto; background: var(--orange); border-radius: 50%; }
+.expertiseTitle { margin: 48px 0 24px; font-size: clamp(40px, 5vw, 64px); font-weight: 600; line-height: 1.15; letter-spacing: -0.05em; }
+.expertiseCaption { margin: 0; color: #c8c8c8; font-size: 16px; line-height: 1.75; }
+.expertiseSteps { display: grid; gap: 14px; margin: 40px 0 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.6; }
+.expertiseSteps li { display: flex; gap: 20px; }
+.expertiseSteps span { color: #999; }
 
 .previewChrome {
   display: flex;
@@ -324,7 +333,7 @@
   font-size: var(--type-display);
   font-weight: 720;
   letter-spacing: -0.06em;
-  line-height: 1.22;
+  line-height: var(--leading-heading, 1.35);
 }
 
 .challengeList {
@@ -384,7 +393,7 @@
   font-size: var(--type-section);
   font-weight: 720;
   letter-spacing: -0.06em;
-  line-height: 1.24;
+  line-height: var(--leading-heading, 1.35);
 }
 
 .projectName {
@@ -459,10 +468,10 @@
 }
 
 .managedProjectImage {
+  display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: auto;
   background: var(--soft);
-  object-fit: cover;
 }
 
 .textLink {
@@ -604,7 +613,7 @@
   font-size: var(--type-display);
   font-weight: 720;
   letter-spacing: -0.06em;
-  line-height: 1.2;
+  line-height: var(--leading-heading, 1.35);
 }
 
 .capabilityList {
@@ -670,7 +679,7 @@
   font-size: var(--type-display);
   font-weight: 700;
   letter-spacing: -0.06em;
-  line-height: 1.24;
+  line-height: var(--leading-heading, 1.35);
 }
 
 .diagnosticsDetails > p {
@@ -754,7 +763,7 @@
   font-size: var(--type-display);
   font-weight: 720;
   letter-spacing: -0.06em;
-  line-height: 1.25;
+  line-height: var(--leading-heading, 1.35);
 }
 
 .reasonGrid {
@@ -815,7 +824,7 @@
   font-size: var(--type-section);
   font-weight: 720;
   letter-spacing: -0.06em;
-  line-height: 1.27;
+  line-height: var(--leading-heading, 1.35);
 }
 
 .aboutCopy > p:not(.sectionLabel):not(.aboutSupporting) {
@@ -1041,7 +1050,7 @@
 
   .heroCopy h1 {
     font-size: var(--type-section);
-    line-height: 1.25;
+    line-height: var(--leading-heading, 1.35);
   }
 
   .heroDescription br,

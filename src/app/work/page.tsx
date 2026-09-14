@@ -37,6 +37,12 @@ export default async function WorkPage() {
         <section className={styles.section} aria-label="프로젝트 목록">
           <div className={styles.container}>
             <div className={styles.projectList}>
+              {projects.length === 0 ? (
+                <div>
+                  <h2 className={styles.projectCardTitle}>프로젝트에 맞는 경험을 함께 이야기합니다.</h2>
+                  <p className={styles.pageDescription}>공개 사례 외에 궁금한 수행 범위가 있다면 상담에서 확인해 주세요. 현재 상황과 목표를 바탕으로 필요한 접근을 안내합니다.</p>
+                </div>
+              ) : null}
               {projects.map((project, index) => (
                 <ProjectCard key={project.slug} project={project} index={index} />
               ))}

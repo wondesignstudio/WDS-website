@@ -1,5 +1,7 @@
 import { projects as fallbackProjects, type Project } from "@/data/projects";
+import { cache } from "react";
 import { getSupabaseServiceClient } from "@/lib/supabase/service";
+import { isDemoPreview } from "./demo";
 
 import type { ClientLogo, LegalDocument, ManagedProject, ProjectMedia } from "./types";
 import type { LegalDocumentType } from "./schema";
@@ -93,7 +95,16 @@ async function listProjectMedia(projectIds: string[]) {
   return grouped;
 }
 
-export async function listPublishedProjects(): Promise<ManagedProject[]> {
+export const listPublishedProjects = cache(async (): Promise<ManagedProject[]> => {
+  if (isDemoPreview()) return fallbackManagedProjects().map((project, index) => ({
+    ...project,
+    detailPublished: true,
+    media: [0, 1, 2].map((variant) => ({
+      id: `demo-screen-${index}-${variant}`,
+      altText: "레이아웃 검토용 가상 웹사이트 이미지",
+      caption: `더미 이미지 ${variant + 1} · 실제 프로젝트 결과물이 아닙니다.`,
+    })),
+  }));
   try {
     const client = getSupabaseServiceClient();
     const { data, error } = await client
@@ -104,15 +115,17 @@ export async function listPublishedProjects(): Promise<ManagedProject[]> {
       .order("created_at", { ascending: true });
 
     if (error) throw error;
-    if (!data?.length) return fallbackManagedProjects();
+    if (!data?.length) return [];
 
     const rows = data as ProjectRow[];
     const mediaByProject = await listProjectMedia(rows.map((row) => row.id));
     return rows.map((row) => mapProject(row, mediaByProject.get(row.id)));
   } catch {
-    return fallbackManagedProjects();
+    // Publication is an explicit admin decision. Never resurrect seed content
+    // when all projects are hidden or the content service is unavailable.
+    return [];
   }
-}
+});
 
 export async function getPublishedProject(slug: string) {
   const projects = await listPublishedProjects();
@@ -120,6 +133,9 @@ export async function getPublishedProject(slug: string) {
 }
 
 export async function listPublishedClientLogos(): Promise<ClientLogo[]> {
+  if (isDemoPreview()) return Array.from({ length: 6 }, (_, index) => ({
+    id: `demo-logo-${index}-0`, clientName: `가상 고객 ${index + 1}`, altText: "레이아웃 검토용 가상 로고",
+  }));
   try {
     const client = getSupabaseServiceClient();
     const { data, error } = await client
@@ -141,9 +157,9 @@ export async function listPublishedClientLogos(): Promise<ClientLogo[]> {
   }
 }
 
-export async function getPublishedLegalDocument(
+export const getPublishedLegalDocument = cache(async (
   documentType: LegalDocumentType,
-): Promise<LegalDocument | null> {
+): Promise<LegalDocument | null> => {
   try {
     const client = getSupabaseServiceClient();
     const { data, error } = await client
@@ -170,4 +186,4 @@ export async function getPublishedLegalDocument(
   } catch {
     return null;
   }
-}
+});

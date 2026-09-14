@@ -216,8 +216,8 @@
 
 .pageHero {
   display: flex;
-  min-height: min(780px, calc(100vh - 90px));
-  padding-block: clamp(112px, 15vw, 210px) clamp(72px, 10vw, 132px);
+  min-height: 420px;
+  padding-block: clamp(80px, 9vw, 128px) clamp(56px, 7vw, 96px);
   align-items: flex-end;
   background: #fff;
 }
@@ -238,9 +238,10 @@
   margin: 0;
   font-size: var(--type-display);
   font-weight: 650;
-  line-height: 0.93;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.075em;
   text-wrap: balance;
+  word-break: keep-all;
 }
 
 .pageHeroSupport {
@@ -290,7 +291,7 @@
   margin: 0;
   font-size: var(--type-display);
   font-weight: 620;
-  line-height: 0.99;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.065em;
   text-wrap: balance;
 }
@@ -480,7 +481,7 @@
   align-self: center;
   font-size: var(--type-display);
   font-weight: 720;
-  line-height: 0.84;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.085em;
   overflow-wrap: anywhere;
 }
@@ -509,7 +510,7 @@
   margin: 0;
   font-size: var(--type-section);
   font-weight: 630;
-  line-height: 0.98;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.065em;
 }
 
@@ -563,7 +564,7 @@
   margin: 0;
   font-size: var(--type-display);
   font-weight: 610;
-  line-height: 0.94;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.072em;
 }
 
@@ -602,7 +603,7 @@
   margin: 0;
   font-size: var(--type-section);
   font-weight: 620;
-  line-height: 1;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.055em;
 }
 
@@ -635,14 +636,14 @@
 .scopeColumn {
   min-height: 480px;
   padding: 0;
-  background: #fff;
+  background: transparent;
 }
 
 .scopeColumn h3 {
   margin: 0 0 48px;
   font-size: var(--type-title);
   font-weight: 620;
-  line-height: 1.1;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.045em;
 }
 
@@ -676,7 +677,7 @@
   margin: 0 0 36px;
   font-size: var(--type-section);
   font-weight: 610;
-  line-height: 1;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.055em;
 }
 
@@ -710,7 +711,7 @@
   margin: 0;
   font-size: var(--type-display);
   font-weight: 580;
-  line-height: 1;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.072em;
   text-wrap: balance;
   word-break: keep-all;
@@ -741,7 +742,7 @@
   margin: 0;
   font-size: var(--type-section);
   font-weight: 520;
-  line-height: 1.22;
+  line-height: 1.55;
   letter-spacing: -0.052em;
   word-break: keep-all;
 }
@@ -771,7 +772,7 @@
   margin: 0;
   font-size: var(--type-section);
   font-weight: 550;
-  line-height: 1.16;
+  line-height: 1.55;
   letter-spacing: -0.052em;
   word-break: keep-all;
 }
@@ -803,7 +804,7 @@
 .valueItem span {
   font-size: var(--type-section);
   font-weight: 600;
-  line-height: 1;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.058em;
 }
 
@@ -817,7 +818,7 @@
   margin: 0;
   font-size: var(--type-section);
   font-weight: 610;
-  line-height: 1.04;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.06em;
 }
 
@@ -882,7 +883,7 @@
   margin: 0;
   font-size: var(--type-section);
   font-weight: 610;
-  line-height: 1;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.058em;
 }
 
@@ -971,7 +972,7 @@
   margin: 0 0 24px;
   font-size: var(--type-title);
   font-weight: 620;
-  line-height: 1.15;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.04em;
 }
 
@@ -1054,12 +1055,19 @@
   line-height: 1.6;
 }
 
+.projectVisualWithImage {
+  display: block;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  align-self: start;
+  background: transparent;
+}
+
 .projectVisualImage {
-  position: absolute;
-  inset: 0;
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
 }
 
 .projectDetailHeroTop {
@@ -1077,7 +1085,7 @@
   margin: 0;
   font-size: var(--type-display);
   font-weight: 720;
-  line-height: 0.8;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.09em;
   overflow-wrap: anywhere;
 }
@@ -1097,7 +1105,7 @@
   margin: 0;
   font-size: var(--type-section);
   font-weight: 610;
-  line-height: 1.02;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.065em;
   word-break: keep-all;
 }
@@ -1202,7 +1210,7 @@
   align-items: center;
   font-size: var(--type-display);
   font-weight: 620;
-  line-height: 0.94;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.075em;
 }
 
@@ -1246,7 +1254,7 @@
   margin: 0;
   font-size: var(--type-section);
   font-weight: 610;
-  line-height: 1.03;
+  line-height: var(--leading-heading, 1.35);
   letter-spacing: -0.06em;
   word-break: keep-all;
 }
@@ -1278,7 +1286,7 @@
   }
 
   .pageHero {
-    min-height: 680px;
+    min-height: 400px;
   }
 
   .pageHeroSupport,
@@ -1395,13 +1403,13 @@
   }
 
   .pageHero {
-    min-height: calc(100svh - 66px);
-    padding-block: 104px 56px;
+    min-height: 0;
+    padding-block: 64px 48px;
   }
 
   .pageTitle {
-    font-size: var(--type-display);
-    line-height: 0.91;
+    font-size: var(--type-section);
+    line-height: var(--leading-heading, 1.35);
   }
 
   .sectionHeading {

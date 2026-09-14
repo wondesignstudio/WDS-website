@@ -10,7 +10,8 @@ Won Design Studio의 한국어 공식 웹사이트입니다. 공개 페이지, �
 - 비공개 Supabase Storage 기반 프로젝트 이미지·고객 로고 승인·공개 관리 구현 완료
 - Google OAuth 관리자 목록·상세·검색·상태·메모·삭제 구현 완료
 - 공개 승인 전 프로젝트 상세와 고객 자산은 Production에서 숨김
-- 실제 Supabase·Resend·GA4·Vercel 설정, 승인 자산 반영과 DNS 전환은 출시 전 남은 작업
+- Supabase·Resend·GA4·Vercel·DNS 연결과 Production 출시 검증 완료
+- 공개 프로젝트 이미지·고객 로고와 최종 법적 문서 발행은 승인 후 진행
 
 현재 실행 상태는 [`docs/planning/current.md`](docs/planning/current.md), 배포 순서는 [`docs/operations/deployment.md`](docs/operations/deployment.md)를 기준으로 합니다.
 
@@ -36,8 +37,8 @@ npm run verify
 
 ## 주요 경로
 
-- 공개: `/`, `/work`, `/services`, `/approach`, `/about`, `/contact`, `/privacy`
-- 관리자: `/admin/login`, `/admin/inquiries`, `/admin/projects`, `/admin/media`, `/admin/legal`
+- 공개: `/`, `/work`, `/work/[slug]`, `/services`, `/approach`, `/about`, `/contact`, `/privacy`
+- 관리자: `/admin/login`, `/admin/inquiries`, `/admin/inquiries/[publicId]`, `/admin/projects`, `/admin/projects/new`, `/admin/projects/[id]`, `/admin/media`, `/admin/media/new`, `/admin/legal`, `/admin/operations`
 - 조건부 공개: `/terms`는 관리자가 이용약관을 처음 발행한 뒤 푸터와 sitemap에 노출
 - 문의 API: `/api/contact`
 - 운영 작업: `/api/cron/email-retry`, `/api/cron/retention`

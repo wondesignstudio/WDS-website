@@ -97,7 +97,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
 
   return (
     <article className={styles.projectCard}>
-      <div className={`${styles.projectVisual} ${toneClass}`}>
+      <div className={`${styles.projectVisual} ${toneClass} ${project.media[0] ? styles.projectVisualWithImage : ""}`}>
         {project.media[0] ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img className={styles.projectVisualImage} src={`/api/media/${project.media[0].id}`} alt={project.media[0].altText} />

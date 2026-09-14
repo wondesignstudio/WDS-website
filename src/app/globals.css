@@ -13,6 +13,7 @@
   --type-label: 16px;
   --type-body: 14px;
   --type-micro: 12px;
+  --leading-heading: 1.35;
   --container: 90rem;
   --gutter: clamp(1.25rem, 5vw, 5.5rem);
   --section-space: clamp(5rem, 10vw, 10rem);

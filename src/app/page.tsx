@@ -22,5 +22,6 @@ export default async function Home() {
     listPublishedClientLogos(),
     getPublishedLegalDocument("terms"),
   ]);
-  return <HomePage projects={projects} clientLogos={clientLogos} hasTerms={Boolean(terms)} />;
+  // Promote only cases with an approved visual. Text-only entries remain on Work.
+  return <HomePage projects={projects.filter((project) => project.media.length > 0)} clientLogos={clientLogos} hasTerms={Boolean(terms)} />;
 }
