@@ -8,10 +8,10 @@ import { createPageMetadata } from "@/lib/metadata";
 import "./globals.css";
 import { isDemoPreview } from "@/lib/content/demo";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://wondesign.studio";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  // Search and social metadata always identify the public canonical site,
+  // never a temporary Preview URL used by authentication callbacks.
+  metadataBase: new URL(siteConfig.url),
   ...createPageMetadata({
     title: "Won Design Studio | Digital Experience Partner",
     description: siteConfig.description,
