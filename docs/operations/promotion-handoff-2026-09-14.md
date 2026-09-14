@@ -44,5 +44,10 @@
 
 - 로컬: ESLint·TypeScript·Vitest·Production build, 홈→문의 이동, 빈 폼 7개 오류 및 회사명 포커스 확인.
 - 브라우저: 390px 주요 6개 공개 페이지에서 가로 넘침·깨진 이미지 없음, 768px 홈 넘침 없음, 브라우저 경고·오류 없음.
-- 실운영 문의 저장·운영자/고객 메일 전달 최종 검증은 운영자 승인 후 합성 문의 1건으로 진행한다. 단위 테스트를 실제 수신 증거로 취급하지 않는다.
-- 배포 커밋 및 원격 검증 결과는 배포 후 기록한다.
+- 운영자 승인 후 2026-09-14 14:23 KST에 합성 문의 1건을 제출했다. 접수 완료 화면, 관리자 목록·상세 및 두 outbox 모두 `sent`·시도 1회를 확인했다.
+- 14:23:46 KST Gmail 받은편지함에서 운영자 알림·고객 확인 메일 2건을 확인했다. 추가 문의나 재발송은 하지 않았다.
+- PR #4가 squash 병합되었다. 운영 배포 커밋: `8f07860c73d5ae1b1126f2745898ba6cbf27213a`, Vercel `READY`, 공식 도메인 alias 연결 확인.
+- Home·Work·Services·Approach·About·Contact·Privacy·robots·sitemap 모두 HTTP 200, 없는 경로 404, www/contact → root/contact 308 확인.
+- Preview와 Production의 공식 canonical 확인. 실제 Google 관리자 로그인 성공. 9월 5~14일 최근 Cron 20건 모두 성공·HTTP 200.
+- Vercel runtime-errors 조회 결과 해당 도구의 선택 기간에서 오류 없음. 이를 모든 과거 로그가 정상이라는 뜻으로 확대하지 않는다.
+- 테스트 메일에서 발견한 WDS 제목 접두사 중복은 별도 템플릿 회귀 테스트로 보정한다. 이 표현 수정 때문에 추가 메일을 발송하지 않는다.

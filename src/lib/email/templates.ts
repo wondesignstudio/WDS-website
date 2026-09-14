@@ -24,13 +24,19 @@ function formatKoreanDate(value: string) {
   }).format(new Date(value));
 }
 
+function withSubjectPrefix(subject: string, configuredPrefix: string) {
+  // The template already carries WDS branding; retain only environment labels.
+  const prefix = configuredPrefix.replace(/\[WDS\]/gi, "").trim();
+  return prefix ? `${prefix} ${subject}` : subject;
+}
+
 export function renderInternalNotification(
   inquiry: StoredInquiryForEmail,
   adminUrl: string,
   subjectPrefix: string,
 ): RenderedEmail {
   const projectType = getProjectTypeLabel(inquiry.projectType);
-  const subject = `${subjectPrefix}[WDS 문의] 새 상담 요청 · ${projectType}`;
+  const subject = withSubjectPrefix(`[WDS 문의] 새 상담 요청 · ${projectType}`, subjectPrefix);
   const text = [
     "새 상담 문의가 접수되었습니다.",
     "",
@@ -59,7 +65,7 @@ export function renderConfirmation(
   inquiry: StoredInquiryForEmail,
   subjectPrefix: string,
 ): RenderedEmail {
-  const subject = `${subjectPrefix}[WDS] 상담 문의가 접수되었습니다`;
+  const subject = withSubjectPrefix("[WDS] 상담 문의가 접수되었습니다", subjectPrefix);
   const text = `${inquiry.contactName}님, 안녕하세요.\n\nWon Design Studio에 보내주신 상담 문의를 확인했습니다. 담당자가 내용을 검토한 뒤 다음 영업일까지 답변드리겠습니다.\n\n감사합니다.\nWon Design Studio`;
   const html = `
     <div style="font-family:Arial,'Apple SD Gothic Neo',sans-serif;color:#18181b;line-height:1.75;max-width:600px;margin:0 auto;padding:24px">
