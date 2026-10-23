@@ -1,0 +1,32 @@
+/* Work only: show the supplied composition, never crop it to a fixed frame. */
+.work-archive .work-card-media,
+.work-archive .archive-list .work-card.is-featured .work-card-media,
+.work-archive .archive-list .work-card:not(.is-featured) .work-card-media {
+  aspect-ratio: auto;
+}
+.work-archive .work-card-media img,
+.work-detail .case-original img,
+.work-detail .case-gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  transform: none;
+}
+.work-archive .archive-list .work-card:not(.is-featured) { width: min(100%, 1120px); margin-inline: auto 0; }
+.work-archive .view-label { position: static; display: block; width: fit-content; margin: 12px 0 0 auto; }
+.work-detail .case-original { margin: 0; }
+.work-detail .case-original a { display: block; }
+.work-detail .case-gallery { grid-template-columns: minmax(0, 1fr); }
+.work-detail .case-gallery .gallery-frame { aspect-ratio: auto; overflow: visible; }
+.work-detail .case-gallery a { display: block; }
+.work-detail .case-gallery [data-tone='ink'] { background: var(--ink); }
+.work-detail .image-note { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-block: 12px 0; color: var(--muted); font-size: 13px; }
+.work-detail .image-note p { margin: 0; }
+.work-detail .image-note a { display: inline-flex; align-items: center; flex-shrink: 0; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; }
+.work-detail .case-showcase { max-width: var(--max); }
+@media (max-width: 540px) {
+  .work-detail .image-note { gap: 12px; font-size: 12px; }
+  .work-detail .case-hero h1 { overflow-wrap: anywhere; }
+}

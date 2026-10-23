@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import WorkCard from '../../components/WorkCard.astro';
+import '../../styles/work.css';
 import { getPublishedWork } from '../../lib/content';
 const work = await getPublishedWork();
 ---
 <BaseLayout title="Work" description="원디자인스튜디오가 실제로 수행한 고객 프로젝트와 문제 해결 과정을 소개합니다.">
-  <main id="main-content">
+  <main id="main-content" class="work-archive">
     <header class="page-hero shell">
       <h1>함께 만든 결과</h1>
       <p>브랜드와 웹사이트, 디지털 제품까지.<br />서로 다른 과제를 풀어온 원디자인의 작업을 소개합니다.</p>

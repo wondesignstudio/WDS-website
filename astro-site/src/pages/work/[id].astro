@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjectVisual from '../../components/ProjectVisual.astro';
+import '../../styles/work.css';
 
 export async function getStaticPaths() {
   const entries = await getCollection('work', ({ data }) => data.published);
@@ -13,7 +13,7 @@ const { Content } = await render(entry);
 const { title, summary, client, category, services, role, layout, cover, gallery, challenge, approach, outcome, disclosure, year } = entry.data;
 ---
 <BaseLayout title={title} description={summary} image={cover}>
-  <main id="main-content" class={`layout-${layout}`}>
+  <main id="main-content" class={`work-detail layout-${layout}`}>
     <header class="case-hero shell">
       <div data-hero-reveal>
         <p class="eyebrow">{category}</p>
@@ -31,7 +31,12 @@ const { title, summary, client, category, services, role, layout, cover, gallery
     </header>
 
     <div class="case-showcase" data-reveal>
-      <ProjectVisual entry={entry} priority />
+      <figure class="case-original">
+        <a href={cover} target="_blank" rel="noopener" aria-label={`${title} 대표 이미지 원본 보기 (새 창)`}>
+          <img src={cover} alt={entry.data.coverAlt} width="1920" height="1080" loading="eager" fetchpriority="high" decoding="async" />
+        </a>
+        <figcaption class="image-note"><p>제공된 작업 원본 · 전체 구성</p><a href={cover} target="_blank" rel="noopener">원본 보기 ↗</a></figcaption>
+      </figure>
     </div>
 
     <section class="section shell case-story" aria-label="프로젝트 문제 해결 과정">
@@ -49,8 +54,8 @@ const { title, summary, client, category, services, role, layout, cover, gallery
 
     {gallery.length > 0 && <section class="section shell case-gallery" aria-label="프로젝트 상세 이미지">
       {gallery.map((image) => <figure data-reveal>
-        <div class="gallery-frame"><img src={image.src} alt={image.alt} loading="lazy" /></div>
-        {image.caption && <figcaption>{image.caption}</figcaption>}
+        <a class="gallery-frame" data-tone={image.tone} href={image.src} target="_blank" rel="noopener" aria-label={`${image.alt} 원본 보기 (새 창)`}><img src={image.src} alt={image.alt} loading="lazy" decoding="async" /></a>
+        <figcaption class="image-note"><p>{image.caption ?? '제공된 작업 원본 · 전체 구성'}</p><a href={image.src} target="_blank" rel="noopener">원본 보기 ↗</a></figcaption>
       </figure>)}
     </section>}
 

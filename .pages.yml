@@ -164,9 +164,10 @@ content:
         options: { values: [paper, sky, lilac, ink] }
       - name: gallery
         label: 상세 이미지
+        description: 원본 비율로 표시하며 자르지 않습니다. 원본 보기로 확대할 수 있습니다. 시안은 설명에 시안으로 명시하세요.
         type: object
         list:
-          max: 12
+          max: 36
           collapsible: { collapsed: true, summary: "{alt} ({index})" }
         fields:
           - name: src
@@ -183,6 +184,12 @@ content:
             label: 설명
             type: text
             options: { maxlength: 180 }
+          - name: tone
+            label: 이미지 배경
+            type: select
+            default: paper
+            description: 투명 배경의 흰색 로고에는 ink를 선택하세요.
+            options: { values: [paper, ink] }
       - name: challenge
         label: 문제
         type: text

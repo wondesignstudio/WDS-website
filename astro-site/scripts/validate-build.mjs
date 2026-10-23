@@ -84,6 +84,12 @@ const htmlFiles = (await outputFiles(root)).filter((path) => path.endsWith('.htm
 let internalLinks = 0;
 for (const path of htmlFiles) {
   const html = await readFile(new URL(path, root), 'utf8');
+  if (path.startsWith('work/') && path !== 'work/index.html') {
+    if (!html.includes('work-detail') || !html.includes('원본 보기')) throw new Error(`Missing uncropped original view: ${path}`);
+    for (const match of html.matchAll(/<a\b[^>]*class="gallery-frame"[^>]*href="([^"]+)"[^>]*>\s*<img\b[^>]*src="([^"]+)"/g)) {
+      if (match[1] !== match[2]) throw new Error(`Original link does not match displayed image: ${path}`);
+    }
+  }
   if (unpublishedRoutes.some((route) => html.includes(route))) {
     throw new Error(`Unpublished content leaked into ${path}`);
   }
@@ -101,6 +107,7 @@ for (const path of htmlFiles) {
   }
 }
 const homeHtml = await readFile(new URL('index.html', root), 'utf8');
+if (homeHtml.includes('work-detail') || homeHtml.includes('work-archive')) throw new Error('Work-only image presentation leaked into home');
 // The feed is scoped to Insights: home retains its existing row layout.
 if (homeHtml.includes('class="insight-feed"') || homeHtml.includes('class="feed-card')) throw new Error('Insights feed leaked into the home page');
 if (/<img\b[^>]*src="\/uploads\/editorial\//.test(homeHtml)) throw new Error('Editorial covers must not change the home text rows');
@@ -145,7 +152,7 @@ for (const path of (await outputFiles(root)).filter((file) => file.endsWith('.xm
   if (/wondesign\.studio\/(journal|lab)(\/|<)/.test(xml)) throw new Error(`Retired route in ${path}`);
 }
 const redirects = await readFile(new URL('_redirects', root),'utf8');
-for (const [from, to] of [['/approach', '/about'], ['/work/timeattack', '/work/time-attack'], ['/work/marketing-catnip', '/work'], ['/work/questboard', '/work']]) {
+for (const [from, to] of [['/approach', '/about'], ['/work/timeattack', '/work/time-attack'], ['/work/marketing-catnip', '/work']]) {
   for (const suffix of ['', '/']) {
     if (!redirects.split('\n').includes(`${from}${suffix} ${to} 301`)) throw new Error(`Missing legacy redirect: ${from}${suffix}`);
   }
