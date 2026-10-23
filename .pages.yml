@@ -246,7 +246,7 @@ content:
         type: image
         description: 글 주제를 표현하는 글씨 없는 전용 표지. 썸네일 이미지 안에 제목·문구를 넣지 않습니다. 프로젝트 화면 대신 일러스트·사진 등 에디토리얼 이미지를 사용하세요. 권장 1600×1000, 최소 가로 1200px, 16:10 비율. 대체 텍스트 필수. 비워두면 텍스트로 표시하며 관련 Work 이미지를 자동 사용하지 않습니다. 홈페이지는 기존 텍스트 목록을 유지합니다.
         options: { media: editorial_images, path: astro-site/public/uploads/editorial, extensions: [webp, avif, jpg, jpeg, png], rename: safe }
-      - { name: coverAlt, label: 표지 대체 텍스트, type: text, options: { minlength: 8, maxlength: 160 } }
+      - { name: coverAlt, label: 표지 대체 텍스트, type: text, description: "표지가 있을 때 8–160자로 입력합니다. 표지가 없는 글은 비워두세요. 표지가 있을 때의 필수 검증은 빌드에서도 수행합니다.", options: { maxlength: 160 } }
       - name: relatedWork
         label: 관련 Work
         type: reference

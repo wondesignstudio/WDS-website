@@ -59,8 +59,8 @@ const insights = defineCollection({
     readingMinutes: z.number().int().min(1).max(60),
     author: z.string().min(2).max(60).default('원디자인스튜디오'),
     series: z.string().max(40).optional(),
-    cover: publicPath.optional(),
-    coverAlt: z.string().min(8).max(160).optional(),
+    cover: z.preprocess((value) => value === '' || value === null ? undefined : value, publicPath.optional()),
+    coverAlt: z.preprocess((value) => value === '' || value === null ? undefined : value, z.string().min(8).max(160).optional()),
     relatedWork: z.array(z.string()).max(6).default([]),
   }).refine((data) => !data.cover || !!data.coverAlt, { message: '표지가 있으면 대체 텍스트를 입력하세요.', path: ['coverAlt'] }),
 });
