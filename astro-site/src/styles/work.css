@@ -18,7 +18,9 @@
 .work-archive .view-label { position: static; display: block; width: fit-content; margin: 12px 0 0 auto; }
 .work-detail .case-original { margin: 0; }
 .work-detail .case-original a { display: block; }
+.work-detail.layout-editorial .case-gallery,
 .work-detail .case-gallery { grid-template-columns: minmax(0, 1fr); }
+.work-detail.work-collection .case-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 40px; }
 .work-detail .case-gallery .gallery-frame { aspect-ratio: auto; overflow: visible; }
 .work-detail .case-gallery a { display: block; }
 .work-detail .case-gallery [data-tone='ink'] { background: var(--ink); }
@@ -29,4 +31,7 @@
 @media (max-width: 540px) {
   .work-detail .image-note { gap: 12px; font-size: 12px; }
   .work-detail .case-hero h1 { overflow-wrap: anywhere; }
+}
+@media (max-width: 700px) {
+  .work-detail.work-collection .case-gallery { grid-template-columns: minmax(0, 1fr); }
 }

@@ -13,7 +13,7 @@ const { Content } = await render(entry);
 const { title, summary, client, category, services, role, layout, cover, gallery, challenge, approach, outcome, disclosure, year } = entry.data;
 ---
 <BaseLayout title={title} description={summary} image={cover}>
-  <main id="main-content" class={`work-detail layout-${layout}`}>
+  <main id="main-content" class:list={['work-detail', `layout-${layout}`, ['social-campaigns', 'selected-identities'].includes(entry.id) && 'work-collection']}>
     <header class="case-hero shell">
       <div data-hero-reveal>
         <p class="eyebrow">{category}</p>
