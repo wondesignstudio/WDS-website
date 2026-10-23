@@ -158,15 +158,16 @@ for (const path of ['/insights', '/insights/*', '/work*', '/search-index.json', 
 for (const line of redirects.split('\n').filter(line => line.startsWith('/'))) {
   const [from,to,status] = line.split(/\s+/);
   if(status !== '301') throw new Error('Migration redirect must be permanent');
-  if (unpublishedRoutes.includes(to)) {
-    if (![`${to}/`, `${to}/index.html`].includes(from)) throw new Error(`Invalid unpublished redirect: ${line}`);
+  const unpublishedTarget = to.split('?')[0];
+  if (unpublishedRoutes.includes(unpublishedTarget)) {
+    if (![`${unpublishedTarget}/`, `${unpublishedTarget}/index.html`].includes(from) || !to.endsWith('?publication=unpublished')) throw new Error(`Invalid unpublished redirect: ${line}`);
     continue; // Intentionally absent canonical path must return a real 404.
   }
   await access(new URL(`${to.slice(1)}/index.html`,root));
 }
 for (const route of unpublishedRoutes) {
   for (const suffix of ['/', '/index.html']) {
-    if (!redirects.split('\n').includes(`${route}${suffix} ${route} 301`)) throw new Error(`Missing unpublished URL revocation: ${route}${suffix}`);
+    if (!redirects.split('\n').includes(`${route}${suffix} ${route}?publication=unpublished 301`)) throw new Error(`Missing unpublished URL revocation: ${route}${suffix}`);
   }
 }
 if (/class="hero-nav|class="hero-signature|class="work-stage/.test(homeHtml)) throw new Error('Superseded Agentic layout remains in home output');

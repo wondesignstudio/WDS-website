@@ -13,7 +13,9 @@ for (const collection of ['work', 'insights']) {
     const frontmatter = source.split('---')[1] ?? '';
     if (/^published:\s*true\s*$/m.test(frontmatter)) continue;
     const route = `/${collection}/${filename.slice(0, -3)}`;
-    rules.push(`${route}/ ${route} 301`, `${route}/index.html ${route} 301`);
+    // A query separates this request from a browser's older cached 308 to the
+    // directory URL, avoiding a cached-308 / new-301 redirect loop.
+    rules.push(`${route}/ ${route}?publication=unpublished 301`, `${route}/index.html ${route}?publication=unpublished 301`);
   }
 }
 await writeFile(redirectsUrl, `${base.trimEnd()}\n\n# Generated: revoke old directory URLs for unpublished content.\n${rules.join('\n')}\n`);
