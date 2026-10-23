@@ -10,3 +10,10 @@
 
 /uploads/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# Keep the review project out of search results without changing the live domain.
+https://wds-studio-preview.pages.dev/*
+  X-Robots-Tag: noindex, nofollow
+
+https://:deployment.wds-studio-preview.pages.dev/*
+  X-Robots-Tag: noindex, nofollow
