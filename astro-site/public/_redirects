@@ -1,4 +1,14 @@
 # Only formerly public articles are mapped. Draft slugs remain unavailable.
+# Legacy live routes: only TimeAttack has an equivalent case in this release.
+/approach /about 301
+/approach/ /about 301
+/work/timeattack /work/time-attack 301
+/work/timeattack/ /work/time-attack 301
+# Retired cases lead to the index, never to an unrelated client project.
+/work/marketing-catnip /work 301
+/work/marketing-catnip/ /work 301
+/work/questboard /work 301
+/work/questboard/ /work 301
 /journal /insights 301
 /journal/ /insights 301
 /journal/before-redesign /insights/before-redesign 301

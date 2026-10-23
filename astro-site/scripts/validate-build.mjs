@@ -145,6 +145,16 @@ for (const path of (await outputFiles(root)).filter((file) => file.endsWith('.xm
   if (/wondesign\.studio\/(journal|lab)(\/|<)/.test(xml)) throw new Error(`Retired route in ${path}`);
 }
 const redirects = await readFile(new URL('_redirects', root),'utf8');
+for (const [from, to] of [['/approach', '/about'], ['/work/timeattack', '/work/time-attack'], ['/work/marketing-catnip', '/work'], ['/work/questboard', '/work']]) {
+  for (const suffix of ['', '/']) {
+    if (!redirects.split('\n').includes(`${from}${suffix} ${to} 301`)) throw new Error(`Missing legacy redirect: ${from}${suffix}`);
+  }
+}
+const headers = await readFile(new URL('_headers', root), 'utf8');
+for (const path of ['/insights', '/insights/*', '/work*', '/search-index.json', '/sitemap*.xml']) {
+  const block = headers.split(/\n\s*\n/).find(block => block.split('\n').includes(path));
+  if (!block?.includes('Cache-Control: no-store') || !block.includes('CDN-Cache-Control: no-store')) throw new Error(`Missing publication cache protection: ${path}`);
+}
 for (const line of redirects.split('\n').filter(line => line.startsWith('/'))) {
   const [,to,status] = line.split(/\s+/);
   if(status !== '301') throw new Error('Migration redirect must be permanent');
