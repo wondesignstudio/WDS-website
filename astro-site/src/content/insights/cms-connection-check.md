@@ -7,6 +7,8 @@ featured: false
 publishedAt: 2026-10-23
 readingMinutes: 1
 author: 원디자인스튜디오
+cover: /uploads/editorial/portfolio-evidence-v2.webp
+coverAlt: 원과 사각형, 반원을 연결해 근거의 흐름을 표현한 비공개 저장 검증용 이미지
 ---
 ## CMS 저장 검증
 
