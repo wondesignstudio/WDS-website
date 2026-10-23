@@ -7,8 +7,8 @@ featured: false
 publishedAt: 2026-10-23
 readingMinutes: 1
 author: 원디자인스튜디오
-cover: /uploads/editorial/portfolio-evidence-v2.webp
-coverAlt: 원과 사각형, 반원을 연결해 근거의 흐름을 표현한 비공개 저장 검증용 이미지
+cover: /uploads/editorial/wds-cms-upload-check-20261023.webp
+coverAlt: CMS 신규 파일 업로드와 비공개 초안 저장을 확인하기 위한 테스트 표지 이미지
 ---
 ## CMS 저장 검증
 
