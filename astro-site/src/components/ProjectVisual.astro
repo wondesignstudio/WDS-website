@@ -1,0 +1,9 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { entry: CollectionEntry<'work'>; priority?: boolean }
+const { entry, priority = false } = Astro.props;
+const d = entry.data;
+---
+<div class:list={['project-visual', `project-visual--${d.showcaseStyle}`, `project-visual--${d.showcaseTone}`]}>
+  <img src={d.showcase ?? d.cover} alt={d.showcaseAlt ?? d.coverAlt} width={d.showcaseWidth ?? 1920} height={d.showcaseHeight ?? 1080} loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : 'auto'} decoding="async" />
+</div>

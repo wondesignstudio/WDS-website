@@ -1,0 +1,17 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { entry: CollectionEntry<'insights'>; heading?: 'h2' | 'h3'; showCover?: boolean }
+// Home keeps its existing text-only rows when editorial covers are added.
+const { entry, heading: Heading = 'h3', showCover = false } = Astro.props;
+const d = entry.data;
+const showImage = showCover && !!d.cover;
+const date = d.publishedAt.toISOString().slice(0,10);
+---
+<article class:list={['insight-row', { 'insight-row--image': showImage }]}>
+  <a href={`/insights/${entry.id}`}>
+    {showImage && <img class="insight-thumb" src={d.cover} alt={d.coverAlt} width="800" height="500" loading="lazy" />}
+    <div class="insight-meta"><span>{d.category}</span><time datetime={date}>{date.replaceAll('-','.')}</time></div>
+    <div class="insight-copy"><Heading class="insight-title">{d.title}</Heading><p>{d.summary}</p></div>
+    <span class="insight-arrow" aria-hidden="true">↗</span>
+  </a>
+</article>

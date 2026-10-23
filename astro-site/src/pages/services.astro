@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedServices, getPublishedWork, selectByIds } from '../lib/content';
+const services = await getPublishedServices();
+const work = await getPublishedWork();
+---
+<BaseLayout title="Services" description="웹사이트 전략, 기업 웹사이트, 디지털 제품 UX/UI와 운영 개선을 프로젝트 상황에 맞춰 제공합니다.">
+  <main id="main-content">
+    <header class="page-hero shell">
+      <h1 data-hero-reveal>하는 일</h1>
+      <p data-hero-reveal>필요한 범위를 분명히 하고, 산출물과 책임을 합의한 뒤 시작합니다.</p>
+    </header>
+    <section class="section shell services-list" aria-label="서비스 목록">
+      {services.map((service, index) => <article id={service.id} class="service-row" data-reveal>
+        <p class="eyebrow">{String(index + 1).padStart(2, '0')}</p>
+        <h2>{service.data.title}</h2>
+        <div class="service-info">
+          <p>{service.data.summary}</p>
+          <div class="service-meta">
+            <div><strong>추천 대상</strong><span>{service.data.suitedFor}</span></div>
+            <div><strong>일반적인 기간</strong><span>{service.data.timeline}</span></div>
+            <div><strong>주요 산출물</strong><ul>{service.data.deliverables.map((item) => <li>{item}</li>)}</ul></div>
+            {selectByIds(work, service.data.relatedWork).length > 0 && <div><strong>관련 사례</strong><ul>{selectByIds(work, service.data.relatedWork).map((entry) => <li><a href={`/work/${entry.id}`} class="service-case-link">{entry.data.title} ↗</a></li>)}</ul></div>}
+          </div>
+        </div>
+      </article>)}
+    </section>
+  </main>
+</BaseLayout>

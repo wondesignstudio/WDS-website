@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-23",
+  "version": 3,
+  "method": "Built-in image_gen; original typographic editorial covers, not client work",
+  "references": [
+    {
+      "url": "https://toss.im/tossfeed/series",
+      "observed": "Fandustry and Moneyball: type as image; Economics Recipe: topic-specific combination of cooking utensils and chart"
+    },
+    {
+      "url": "https://toss.im/tossfeed/series/tosspick-2025",
+      "observed": "Relationship, taste and AI competitiveness covers: concise Korean cover copy, text integrated with graphic forms, series palette and hierarchy"
+    }
+  ],
+  "intentionalDifferences": "Original WDS cream, ink and orange editorial identity; do not reproduce Toss pill shapes or proprietary artwork. Preserve site typography, layout and homepage.",
+  "assets": [
+    {
+      "article": "portfolio-is-evidence",
+      "file": "/uploads/editorial/portfolio-evidence-v3.webp",
+      "coverText": [
+        "보여주기보다",
+        "증명하기"
+      ],
+      "prompt": "Use case: ads-marketing. Design a finished sophisticated Korean editorial magazine cover, 1600x1000 landscape 16:10, for Won Design Studio's article \"a portfolio is evidence, not a gallery.\" Typography and visual meaning integrated, NOT a little icon in an empty rectangle. The cover is a confident editorial poster designed by a skilled Korean graphic designer. Flat near-black ink-navy background #17232B, warm ivory #F2EEE5 typography, sharp vermilion #F56A40 accents. Precise contemporary Korean grotesk typography, akin to Pretendard semibold; optically excellent Korean spacing, generous line leading, no bubbly type. Main headline EXACT Korean two lines, large, left aligned, 100px left margin, centered vertically: first line \"보여주기보다\", second line \"증명하기\". The second line sits over one broad flat vermilion orange rectangular highlight. Headline occupies about 65 percent width with extremely clear hierarchy. On the right third, integrate one beautiful oversized thin-line editorial diagram of three offset rectangular proof frames, white hairlines, some extending beyond right edge; their overlapping intersections pick out ONE orange solid rectangular area, symbolizing selected evidence. Frames may overlap behind the end of the orange headline band but must not obscure the Korean glyphs. This diagram is an editorial composition, not a checklist, no arrows connecting icons. Small quiet uppercase text at top left exactly \"WDS INSIGHTS / 01\". Medium small uppercase word at lower right exactly \"EVIDENCE\", tracked elegantly, matching the proof frame. No additional text. A few extremely restrained alignment rules echo the typography baseline. Strong asymmetry, deliberate graphic tension, empty breathing space around the headline, impeccable typography first, graphic second. Crisp flat ink artwork, no 3D, no perspective, no grain, no paper, no shadows, no gradient, no photorealistic objects, no stock illustration, no circles and squares in cards, no checkmarks, no fake interface, no logos. Do not put rounded rectangles around every word. Spell Korean text exactly, no extra letters or gibberish. Output only the finished cover, no device mockup."
+    },
+    {
+      "article": "before-redesign",
+      "file": "/uploads/editorial/redesign-checklist-v3.webp",
+      "coverText": [
+        "리뉴얼 전에,",
+        "질문부터.",
+        "방문자",
+        "목표",
+        "콘텐츠",
+        "기술",
+        "운영"
+      ],
+      "prompt": "Use case: ads-marketing. Design a finished sophisticated Korean editorial magazine cover, 1600x1000 landscape 16:10, for Won Design Studio's essay about the five questions to ask before website redesign. Editorial typography and graphics integrated, professional contemporary Korean culture/design publication, NOT a checklist icon, NOT generic stock art. Flat pale lavender-gray background #E4E1F0, near-black ink #17232B typography, warm vermilion orange #F56A40 accent, warm ivory highlights. Use a disciplined asymmetric editorial grid. LEFT half: excellent modern Korean grotesk headline in two large clearly separated lines, optically spaced, medium-bold not ultra-heavy: exact text line 1 \"리뉴얼 전에,\" line 2 \"질문부터.\" with an elegant thin orange underline beneath second line. RIGHT half: one enormous orange typographic numeral \"5\" occupying about 75 percent height, bold sophisticated grotesk form, its outer right edge slightly cropped by canvas. Integrate five small horizontal ivory editorial index strips across parts of the huge numeral, like marginal labels rather than app buttons, each with dark Korean text, exactly one word per strip: \"방문자\", \"목표\", \"콘텐츠\", \"기술\", \"운영\". Each strip is on its own measured horizontal level, staggered a little left and right, no 3D, no shadows. These five words are essential article content, not decorative confetti. Clear generous space between headline and numeral so all Korean headline remains legible at 320px thumbnail. Top left small quiet uppercase exactly \"WDS INSIGHTS / 02\". Bottom left medium small tracked uppercase exactly \"BEFORE REDESIGN\". Only those specified text elements. Very intentional hierarchy, expressive monumental numeral, calm left-aligned headline, lively but controlled composition, a collectible editorial print cover rather than a PowerPoint slide. Sharp flat color and clean type. No grain, texture, gradients, lighting, shadows, 3D, photographic objects, pencils, folders, browser UI, checkmarks, repeated generic icons, floating bubbles, ornamental symbols or extra logos. Spell all Korean accurately. Output only the finished cover, no mockup."
+    }
+  ]
+}

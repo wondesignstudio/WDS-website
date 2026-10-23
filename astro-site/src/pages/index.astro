@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectVisual from '../components/ProjectVisual.astro';
+import InsightRow from '../components/InsightRow.astro';
+import { getPublishedInsights, getPublishedWork, getPublishedServices, getSiteSettings, selectByIds } from '../lib/content';
+import '../styles/home.css';
+import '../styles/insights.css';
+import '../styles/immersive.css';
+const settings = await getSiteSettings();
+const allWork = await getPublishedWork();
+const [lead, ...otherWork] = selectByIds(allWork, settings.featuredWork);
+const services = await getPublishedServices();
+const insights = selectByIds(await getPublishedInsights(), settings.featuredInsights).slice(0, 3);
+---
+<BaseLayout description={settings.description} home={!!lead}>
+  <main id="main-content" class="studio-home">
+    <h1 class="sr-only">Won Design Studio — 브랜드와 디지털 경험을 만드는 원디자인스튜디오</h1>
+    {lead && <div class="work-sequence" data-work-sequence>
+      <section class="immersive-hero" aria-labelledby="hero-project-title" data-hero>
+        <div class="hero-media" data-hero-media>
+          <img src={lead.data.heroImage ?? lead.data.showcase ?? lead.data.cover}
+            alt={lead.data.heroAlt ?? lead.data.showcaseAlt ?? lead.data.coverAlt}
+            class={`hero-image hero-image--${lead.data.heroPosition}`}
+            width={lead.data.heroImage ? 2560 : (lead.data.showcaseWidth ?? 1920)}
+            height={lead.data.heroImage ? 1440 : (lead.data.showcaseHeight ?? 1080)}
+            loading="eager" fetchpriority="high" decoding="async" />
+        </div>
+        <div class="hero-caption" data-hero-caption>
+          <div><h2 id="hero-project-title"><a href={`/work/${lead.id}`}>{lead.data.title}</a></h2>
+          <p>{lead.data.displayServices ?? lead.data.services.join(' · ')}</p></div>
+          <a class="hero-project-link" href={`/work/${lead.id}`} aria-label={`${lead.data.title} 프로젝트 보기`}>프로젝트 보기 <img src="/icons/arrow-up-right.svg" alt="" width="22" height="22" /></a>
+        </div>
+      </section>
+      <section id="selected-work" class="selected-work" aria-labelledby="work-heading" data-work-reveal>
+      <div class="selected-heading"><h2 id="work-heading">Selected work.</h2><a href="/work">전체 프로젝트 <img src="/icons/arrow-up-right.svg" alt="" width="20" height="20" /></a></div>
+      {otherWork.length > 0 && <div class="selected-grid">
+        {otherWork.map((entry, index) => <article class="selected-project">
+          <a class="selected-project-link" href={`/work/${entry.id}`}>
+            <ProjectVisual entry={entry} />
+            <div class="selected-project-title"><h3>{entry.data.title}</h3><span aria-hidden="true">↗</span></div>
+            <p class="selected-project-line">{entry.data.homeHeadline ?? entry.data.summary}</p>
+          </a>
+          <div class="project-caption"><p>{entry.data.services.join(' · ')}</p><span>{String(index + 2).padStart(2,'0')}</span></div>
+        </article>)}
+      </div>}
+      <div class="work-end"><a class="action-link" href="/work">프로젝트 전체 보기 <span aria-hidden="true">↗</span></a></div>
+      </section>
+    </div>}
+    <section class="studio-introduction studio-width" aria-labelledby="studio-heading">
+      <div class="section-label"><span class="studio-dot" aria-hidden="true"></span><p>우리가 하는 일</p></div>
+      <div class="studio-introduction-body"><h2 id="studio-heading">보이는 인상과<br />사용하는 경험을<br /><span>하나의 방향으로.</span></h2><p>{settings.heroBody}</p><a class="action-link" href="/about">스튜디오 알아보기 <span aria-hidden="true">↗</span></a></div>
+      <div class="home-services">{services.map((service,index) => <a href={`/services#${service.id}`}><span>{String(index+1).padStart(2,'0')}</span><h3>{service.data.title}</h3><span aria-hidden="true">↗</span></a>)}</div>
+    </section>
+    {insights.length > 0 && <section class="home-insights studio-width" aria-labelledby="insights-heading">
+      <div class="insights-section-head"><div><p class="section-label">일하며 발견한 생각들</p><h2 id="insights-heading">Insights<span aria-hidden="true">.</span></h2></div><a class="action-link" href="/insights">인사이트 전체 보기 <span aria-hidden="true">↗</span></a></div>
+      <div class="insight-list">{insights.map(entry => <InsightRow entry={entry} />)}</div>
+    </section>}
+  </main>
+  <script>
+    import '../scripts/motion.ts';
+  </script>
+</BaseLayout>

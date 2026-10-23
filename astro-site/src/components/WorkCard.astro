@@ -1,0 +1,25 @@
+---
+import ProjectVisual from './ProjectVisual.astro';
+const { entry, priority = false } = Astro.props;
+const { title, summary, category, services, featured } = entry.data;
+---
+<article class:list={['work-card', featured && 'is-featured']} data-reveal>
+  <a href={`/work/${entry.id}`} aria-label={`${title} 프로젝트 보기`}>
+    <div class="work-card-media">
+      <ProjectVisual entry={entry} priority={priority} />
+      <span class="view-label">View project ↗</span>
+    </div>
+    <div class="work-card-copy">
+      <div>
+        <p class="eyebrow">{category}{featured ? ' · Featured' : ''}</p>
+        <h3>{title}</h3>
+      </div>
+      <div>
+        <p>{summary}</p>
+        <ul class="inline-list" aria-label="수행 범위">
+          {services.map((service: string) => <li>{service}</li>)}
+        </ul>
+      </div>
+    </div>
+  </a>
+</article>

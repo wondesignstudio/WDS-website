@@ -1,0 +1,41 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+import '../styles/studio.css';
+
+const {
+  title = 'Won Design Studio',
+  description = '사업을 이해하고 웹사이트와 디지털 제품의 전략, 디자인, 개발을 연결하는 원디자인스튜디오입니다.',
+  image,
+  noindex = false,
+  home = false,
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const pageTitle = title === 'Won Design Studio' ? title : `${title} | Won Design Studio`;
+const analyticsToken = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN;
+---
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f4f2ed" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {image && <meta property="og:image" content={new URL(image, Astro.site)} />}
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+    <title>{pageTitle}</title>
+    <link rel="icon" href="/brand/wds-logo-black.png" />
+  </head>
+  <body class:list={{ 'is-home': home }}>
+    <Header currentPath={Astro.url.pathname} home={home} />
+    <slot />
+    <Footer showInvitation={Astro.url.pathname.replace(/\/$/, '') !== '/contact'} />
+    {analyticsToken && <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: analyticsToken })}></script>}
+  </body>
+</html>

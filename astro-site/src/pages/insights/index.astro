@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import InsightFeedCard from '../../components/InsightFeedCard.astro';
+import { getPublishedInsights } from '../../lib/content';
+import '../../styles/insight-feed.css';
+const insights = await getPublishedInsights();
+const lead = insights.find(entry => entry.data.featured) ?? insights[0];
+const rest = insights.filter(entry => entry.id !== lead?.id);
+---
+<BaseLayout title="인사이트" description="브랜딩, UX/UI와 웹사이트를 만들며 발견한 질문과 판단 기준을 기록합니다.">
+  <main id="main-content" class="insight-feed">
+    <header class="feed-masthead"><h1>Insights<span aria-hidden="true">.</span></h1><p>더 나은 디자인을 위한 생각과 기록</p></header>
+    {lead ? <>
+      <section class="feed-feature" aria-label="추천 인사이트"><InsightFeedCard entry={lead} lead heading="h2" /></section>
+      {rest.length > 0 && <section class="feed-latest" aria-labelledby="feed-latest-heading">
+        <header class="feed-section-heading"><h2 id="feed-latest-heading">함께 읽어보세요</h2><p>브랜딩, UX/UI, 웹사이트에 대한 우리의 관점</p></header>
+        <div class="feed-list">{rest.map(entry => <InsightFeedCard entry={entry} />)}</div>
+      </section>}
+    </> : <section class="feed-empty"><h2>첫 번째 기록을 준비하고 있습니다.</h2><p>브랜딩과 디지털 경험에 대한 생각을 이곳에 차곡차곡 담겠습니다.</p><a class="action-link" href="/work">프로젝트 둘러보기</a></section>}
+  </main>
+</BaseLayout>

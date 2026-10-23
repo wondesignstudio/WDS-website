@@ -1,0 +1,58 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectVisual from '../../components/ProjectVisual.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('work', ({ data }) => data.published);
+  return entries.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, summary, client, category, services, role, layout, cover, gallery, challenge, approach, outcome, disclosure, year } = entry.data;
+---
+<BaseLayout title={title} description={summary} image={cover}>
+  <main id="main-content" class={`layout-${layout}`}>
+    <header class="case-hero shell">
+      <div data-hero-reveal>
+        <p class="eyebrow">{category}</p>
+        <h1>{title}</h1>
+      </div>
+      <div class="case-hero-copy" data-hero-reveal>
+        <p>{summary}</p>
+        <dl class="case-facts">
+          <dt>Client</dt><dd>{client}</dd>
+          <dt>Role</dt><dd>{role}</dd>
+          <dt>Scope</dt><dd>{services.join(' · ')}</dd>
+          {year && <><dt>Year</dt><dd>{year}</dd></>}
+        </dl>
+      </div>
+    </header>
+
+    <div class="case-showcase" data-reveal>
+      <ProjectVisual entry={entry} priority />
+    </div>
+
+    <section class="section shell case-story" aria-label="프로젝트 문제 해결 과정">
+      <div>
+        <p class="eyebrow" data-reveal>Case notes</p>
+        <div class="prose" data-reveal><Content /></div>
+        {disclosure && <p class="disclosure" data-reveal>{disclosure}</p>}
+      </div>
+      <div class="case-story-body">
+        <article class="case-story-block" data-reveal><h2>문제</h2><p>{challenge}</p></article>
+        <article class="case-story-block" data-reveal><h2>접근</h2><p>{approach}</p></article>
+        <article class="case-story-block" data-reveal><h2>만들어진 변화</h2><p>{outcome}</p></article>
+      </div>
+    </section>
+
+    {gallery.length > 0 && <section class="section shell case-gallery" aria-label="프로젝트 상세 이미지">
+      {gallery.map((image) => <figure data-reveal>
+        <div class="gallery-frame"><img src={image.src} alt={image.alt} loading="lazy" /></div>
+        {image.caption && <figcaption>{image.caption}</figcaption>}
+      </figure>)}
+    </section>}
+
+  </main>
+</BaseLayout>

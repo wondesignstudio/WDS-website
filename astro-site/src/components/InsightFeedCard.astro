@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { insightImage } from '../lib/insight-presentation';
+interface Props {
+  entry: CollectionEntry<'insights'>;
+  lead?: boolean;
+  heading?: 'h2' | 'h3';
+}
+const { entry, lead = false, heading: Heading = 'h3' } = Astro.props;
+const d = entry.data;
+const picture = insightImage(entry);
+const date = d.publishedAt.toISOString().slice(0, 10);
+---
+<article class:list={['feed-card', { 'feed-card--lead': lead, 'feed-card--text': !picture }]}>
+  <a class="feed-card-link" href={`/insights/${entry.id}`}>
+    {picture && <figure class="feed-card-media">
+      <div class="feed-card-image"><img src={picture.src} alt={picture.alt} width="1600" height="1000" loading={lead ? 'eager' : 'lazy'} fetchpriority={lead ? 'high' : 'auto'} /></div>
+    </figure>}
+    <div class="feed-card-copy">
+      <p class="feed-category">{d.category}</p>
+      <Heading>{d.title}</Heading>
+      <p class="feed-summary">{d.summary}</p>
+      <div class="feed-meta"><time datetime={date}>{date.replaceAll('-', '.')}</time><span>{d.readingMinutes}분 읽기</span></div>
+      {lead && <span class="feed-read">아티클 읽기 <img src="/icons/arrow-up-right.svg" width="18" height="18" alt="" aria-hidden="true" /></span>}
+    </div>
+  </a>
+</article>

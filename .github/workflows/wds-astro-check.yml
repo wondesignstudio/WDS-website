@@ -1,0 +1,22 @@
+name: WDS Astro Check
+on:
+  push:
+    branches: [codex/astro-cms-setup]
+    paths: ['astro-site/**', '.pages.yml']
+  pull_request:
+    paths: ['astro-site/**', '.pages.yml']
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: astro-site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: astro-site/package-lock.json
+      - run: npm ci
+      - run: npm run verify

@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-23",
+  "version": 2,
+  "method": "Built-in image_gen; original editorial flat graphic, not client work",
+  "reference": "https://toss.im/tossfeed",
+  "direction": "Replace tactile stationery scenes with restrained geometric editorial graphics; homepage and layouts unchanged",
+  "assets": [
+    {
+      "article": "portfolio-is-evidence",
+      "file": "/uploads/editorial/portfolio-evidence-v2.webp",
+      "prompt": "Create an original flat editorial graphic cover for a Korean design studio article about portfolios being evidence of decisions, not a gallery. Landscape 1600x1000, exact 16:10. Sophisticated restrained contemporary Korean editorial graphic design, mathematically clean vector-like shapes, completely flat uniform color fills and hard clean edges. A generous pale ice-blue solid background. Exactly three warm ivory rectangular cards, aligned horizontally in a slightly stepped rhythm, broad rounded corners. Each card has only one large simple dark ink geometric form: a circle, a square, a solid semicircle. One continuous bold vermilion orange line links these three forms through the cards, ending in a simple small arrow on the right, communicating connected reasoning rather than unrelated pictures. The orange line must be visually intentional, tidy, no crossings or loops. Composition takes 70 percent of canvas with excellent whitespace. Only four colors: ice blue, ivory, near-black ink, vermilion orange. Graphic shapes are the entire art; absolutely no real objects, no paper grain, no texture, no noise, no shadows, no shading, no gradients, no 3D, no perspective, no mockups, no magnifying glass, no folders, no pencils, no photographic content, no decorative dots, no text, no letters, no numbers, no logos, no watermark. It should look like precise editorial artwork produced in a vector design program, not an AI illustration. Output only the finished image."
+    },
+    {
+      "article": "before-redesign",
+      "file": "/uploads/editorial/redesign-checklist-v2.webp",
+      "prompt": "Create an original flat editorial graphic cover for a Korean design studio article about five checks before a website redesign. Landscape 1600x1000 exact 16:10. Sophisticated restrained contemporary Korean editorial graphic design, clean vector-like geometry, completely flat uniform color fills, precise edges. Solid very pale sage green background. A single large warm ivory rounded rectangle centered on the canvas, frontal orthographic with absolutely no depth. Across its center is one elegant horizontal row of exactly FIVE identical dark forest green rounded square checkboxes, equally spaced. The first FOUR have clean ivory checkmarks, the FIFTH is vermilion orange and contains a clean ivory checkmark. Above the row, a single short thick dark forest green horizontal bar aligned to the left, representing the headline without text. Below the row, one very thin forest green rule. Confident large geometric shapes, ample whitespace, no little details. Main panel fills approximately 70 percent canvas width and 56 percent height. Only four colors: pale sage, ivory, dark forest green, vermilion orange. Absolutely no texture, paper grain, noise, shadows, shading, gradients, 3D, perspective, photographed objects, stationery, pencils, rulers, browser chrome, floating decorations, text, letters, digits, logos or watermark. This must look like exact intentional editorial graphic design, not a rendered scene or AI illustration. Output only the finished image."
+    }
+  ]
+}

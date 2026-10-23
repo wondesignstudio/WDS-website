@@ -1,0 +1,306 @@
+media:
+  - name: work_images
+    label: 프로젝트 이미지
+    input: astro-site/public/uploads/work
+    output: /uploads/work
+    extensions: [webp, avif, jpg, jpeg, png]
+    rename: safe
+  - name: editorial_images
+    label: 인사이트 이미지
+    input: astro-site/public/uploads/editorial
+    output: /uploads/editorial
+    extensions: [webp, avif, jpg, jpeg, png]
+    rename: safe
+
+settings:
+  content:
+    merge: true
+  commit:
+    identity: user
+    templates:
+      create: "content: create {path}"
+      update: "content: update {path}"
+      delete: "content: delete {path}"
+      rename: "content: rename {oldPath} to {newPath}"
+
+content:
+  - name: work
+    label: Work
+    type: collection
+    path: astro-site/src/content/work
+    format: yaml-frontmatter
+    filename:
+      template: "{primary}.md"
+      field: create
+    view:
+      fields: [title, published, featured, layout, order]
+      primary: title
+      sort: [order, title]
+      search: [title, client, category, summary]
+      default:
+        sort: order
+        order: asc
+    fields:
+      - name: title
+        label: 프로젝트명
+        type: string
+        required: true
+        description: 2–72자. 카드에서 두 줄을 넘기지 않는 제목을 권장합니다.
+        options: { minlength: 2, maxlength: 72 }
+      - name: summary
+        label: 한 줄 요약
+        type: text
+        required: true
+        description: 문제와 변화를 20–180자로 설명합니다.
+        options: { minlength: 20, maxlength: 180 }
+      - name: client
+        label: 고객사
+        type: string
+        required: true
+        options: { maxlength: 80 }
+      - name: homeHeadline
+        label: 홈페이지 사례 제목
+        type: string
+        description: 해결한 문제를 8–90자로 짧게 설명합니다. 비워두면 요약을 표시합니다.
+        options: { minlength: 8, maxlength: 90 }
+      - name: category
+        label: 프로젝트 분류
+        type: string
+        required: true
+        options: { maxlength: 40 }
+      - name: services
+        label: 수행 범위
+        type: string
+        required: true
+        list: { min: 1, max: 8 }
+      - name: role
+        label: WDS 역할
+        type: text
+        required: true
+        options: { maxlength: 140 }
+      - name: published
+        label: 공개
+        type: boolean
+        default: false
+        description: 켜야 사이트, 사이트맵, 검색 인덱스와 추천 콘텐츠에 포함됩니다.
+      - name: featured
+        label: Featured 후보
+        type: boolean
+        default: false
+        description: 홈페이지 실제 노출 순서는 사이트 설정에서 별도로 선택합니다.
+      - name: layout
+        label: 상세 레이아웃
+        type: select
+        required: true
+        options:
+          values:
+            - { name: image, label: 이미지 중심 }
+            - { name: problem, label: 문제 해결 중심 }
+            - { name: editorial, label: 편집 디자인 중심 }
+      - name: order
+        label: 목록 순서
+        type: number
+        required: true
+        default: 100
+      - name: cover
+        label: 대표 이미지
+        type: image
+        required: true
+        description: 권장 1920×1080 이상, WebP/AVIF, 16:9 원본. 이미지 전체 비율을 보존합니다.
+        options: { media: work_images, path: astro-site/public/uploads/work, extensions: [webp, avif, jpg, jpeg, png], rename: safe }
+      - name: coverAlt
+        label: 대표 이미지 대체 텍스트
+        type: text
+        required: true
+        options: { minlength: 8, maxlength: 160 }
+      - name: showcase
+        label: 홈페이지 전용 이미지
+        type: image
+        description: 선택사항. 없으면 대표 이미지를 사용합니다. 텍스트가 적은 실제 화면 또는 완성된 목업을 권장하며 원본 전체 비율을 보존합니다.
+        options: { media: work_images, path: astro-site/public/uploads/work, extensions: [webp, avif, jpg, jpeg, png], rename: safe }
+      - name: heroImage
+        label: 풀스크린 첫 화면 이미지
+        type: image
+        description: 추천 Work 첫 항목에 사용. 실제 원본의 텍스트가 적은 단일 이미지, 가로 2560px 이상 권장. 화면을 채우며 가장자리가 잘립니다. 비우면 홈페이지 전용 이미지 사용.
+        options: { media: work_images, path: astro-site/public/uploads/work, extensions: [webp, avif, jpg, jpeg, png], rename: safe }
+      - name: heroAlt
+        label: 풀스크린 이미지 설명
+        type: text
+        options: { minlength: 8, maxlength: 160 }
+      - name: heroPosition
+        label: 풀스크린 이미지 중심
+        type: select
+        default: center
+        options: { values: [center, left, right] }
+      - name: displayServices
+        label: 첫 화면 영문 수행 범위
+        type: string
+        description: 예시 Brand Identity · UX/UI. 비우면 기존 수행 범위를 표시합니다.
+        options: { minlength: 2, maxlength: 80 }
+      - name: showcaseAlt
+        label: 홈페이지 이미지 설명
+        type: text
+        options: { minlength: 8, maxlength: 160 }
+      - name: showcaseStyle
+        label: 홈페이지 이미지 표시 방식
+        type: select
+        default: image
+        options:
+          values:
+            - { name: image, label: 원본 이미지 }
+            - { name: screen, label: 웹 화면 프레임 }
+            - { name: device, label: 디바이스 목업 }
+      - name: showcaseWidth
+        label: 홈페이지 이미지 원본 가로 픽셀
+        type: number
+      - name: showcaseHeight
+        label: 홈페이지 이미지 원본 세로 픽셀
+        type: number
+      - name: showcaseTone
+        label: 이미지 배경 프리셋
+        type: select
+        default: paper
+        description: 정해진 배경만 선택할 수 있습니다. 검정 배경 목업에는 ink를 사용하세요.
+        options: { values: [paper, sky, lilac, ink] }
+      - name: gallery
+        label: 상세 이미지
+        type: object
+        list:
+          max: 12
+          collapsible: { collapsed: true, summary: "{alt} ({index})" }
+        fields:
+          - name: src
+            label: 이미지
+            type: image
+            required: true
+            options: { media: work_images, path: astro-site/public/uploads/work, extensions: [webp, avif, jpg, jpeg, png], rename: safe }
+          - name: alt
+            label: 대체 텍스트
+            type: text
+            required: true
+            options: { minlength: 8, maxlength: 160 }
+          - name: caption
+            label: 설명
+            type: text
+            options: { maxlength: 180 }
+      - name: challenge
+        label: 문제
+        type: text
+        required: true
+        options: { minlength: 20, maxlength: 500 }
+      - name: approach
+        label: 접근과 주요 결정
+        type: text
+        required: true
+        options: { minlength: 20, maxlength: 700 }
+      - name: outcome
+        label: 만들어진 변화
+        type: text
+        required: true
+        description: 확인 가능한 결과만 입력하고 추정 수치는 사용하지 않습니다.
+        options: { minlength: 20, maxlength: 500 }
+      - name: disclosure
+        label: 공개 범위 안내
+        type: text
+        options: { maxlength: 260 }
+      - name: year
+        label: 연도
+        type: number
+      - name: body
+        label: 편집자 노트
+        type: rich-text
+        options: { format: markdown, media: work_images, switcher: true }
+
+  - name: insights
+    label: 인사이트
+    type: collection
+    path: astro-site/src/content/insights
+    format: yaml-frontmatter
+    filename: { template: "{primary}.md", field: create }
+    view:
+      fields: [title, published, featured, category, publishedAt]
+      primary: title
+      sort: [publishedAt, title]
+      search: [title, summary, category]
+      default: { sort: publishedAt, order: desc }
+    fields:
+      - { name: title, label: 제목, type: string, required: true, options: { minlength: 2, maxlength: 72 } }
+      - { name: summary, label: 요약, type: text, required: true, options: { minlength: 20, maxlength: 180 } }
+      - name: category
+        label: 분류
+        type: select
+        required: true
+        options: { values: [UX/UI, Branding, Web Strategy, Studio Notes] }
+      - name: published
+        label: 공개
+        type: boolean
+        default: false
+        description: 초안은 끄고 보관합니다. 켜고 저장하면 다음 배포에 공개됩니다. 게시일은 표시 및 정렬용이며 예약 발행 기능은 아닙니다.
+      - { name: featured, label: 추천 후보, type: boolean, default: false }
+      - { name: publishedAt, label: 게시일 (정렬·표시용), type: date, required: true }
+      - { name: readingMinutes, label: 예상 읽기 시간(분), type: number, required: true }
+      - { name: author, label: 작성자, type: string, default: 원디자인스튜디오, options: { minlength: 2, maxlength: 60 } }
+      - { name: series, label: 연재명 (선택), type: string, options: { maxlength: 40 } }
+      - name: cover
+        label: 표지 이미지
+        type: image
+        description: 글 주제를 표현하는 글씨 없는 전용 표지. 썸네일 이미지 안에 제목·문구를 넣지 않습니다. 프로젝트 화면 대신 일러스트·사진 등 에디토리얼 이미지를 사용하세요. 권장 1600×1000, 최소 가로 1200px, 16:10 비율. 대체 텍스트 필수. 비워두면 텍스트로 표시하며 관련 Work 이미지를 자동 사용하지 않습니다. 홈페이지는 기존 텍스트 목록을 유지합니다.
+        options: { media: editorial_images, path: astro-site/public/uploads/editorial, extensions: [webp, avif, jpg, jpeg, png], rename: safe }
+      - { name: coverAlt, label: 표지 대체 텍스트, type: text, options: { minlength: 8, maxlength: 160 } }
+      - name: relatedWork
+        label: 관련 Work
+        type: reference
+        options: { collection: work, multiple: true, max: 6, search: "title,client,category", value: "{name}", label: "{title}" }
+      - { name: body, label: 본문, type: rich-text, required: true, options: { format: markdown, media: editorial_images, switcher: true } }
+
+  - name: services
+    label: 서비스
+    type: collection
+    path: astro-site/src/content/services
+    format: yaml-frontmatter
+    filename: { template: "{primary}.md", field: create }
+    view:
+      fields: [title, published, order, timeline]
+      primary: title
+      sort: [order, title]
+      default: { sort: order, order: asc }
+    fields:
+      - { name: title, label: 서비스명, type: string, required: true, options: { minlength: 2, maxlength: 72 } }
+      - { name: summary, label: 요약, type: text, required: true, options: { minlength: 20, maxlength: 180 } }
+      - { name: published, label: 공개, type: boolean, default: false }
+      - { name: order, label: 순서, type: number, required: true, default: 100 }
+      - { name: timeline, label: 일반적인 기간, type: string, required: true, options: { maxlength: 80 } }
+      - { name: suitedFor, label: 추천 대상, type: text, required: true, options: { minlength: 10, maxlength: 240 } }
+      - { name: deliverables, label: 주요 산출물, type: string, required: true, list: { min: 1, max: 10 } }
+      - name: relatedWork
+        label: 관련 프로젝트
+        type: reference
+        description: 홈페이지 서비스 설명에서 연결할 실제 사례입니다. 비공개 프로젝트는 표시되지 않습니다.
+        options: { collection: work, multiple: true, max: 3, search: "title,client,category", value: "{name}", label: "{title}" }
+      - { name: body, label: 상세 설명, type: rich-text, options: { format: markdown, media: false } }
+
+  - name: site_settings
+    label: 홈페이지 · 기본 정보
+    type: file
+    path: astro-site/src/content/settings/site.md
+    format: yaml-frontmatter
+    operations: { create: false, rename: false, delete: false }
+    fields:
+      - { name: published, label: 설정 사용, type: boolean, default: true }
+      - { name: siteName, label: 사이트명, type: string, required: true, options: { maxlength: 80 } }
+      - { name: description, label: 사이트 설명, type: text, required: true, options: { minlength: 30, maxlength: 180 } }
+      - { name: heroEyebrow, label: 히어로 작은 제목, type: string, required: true, options: { maxlength: 60 } }
+      - { name: heroTitle, label: 히어로 제목 첫 줄, type: string, required: true, options: { minlength: 2, maxlength: 80 } }
+      - { name: heroAccent, label: 히어로 강조 문장, type: string, required: true, options: { minlength: 2, maxlength: 80 } }
+      - { name: heroBody, label: 히어로 설명, type: text, required: true, options: { minlength: 20, maxlength: 220 } }
+      - { name: contactEmail, label: 업무용 이메일, type: string, required: true }
+      - { name: contactPhone, label: 전화번호, type: string, options: { maxlength: 40 } }
+      - name: featuredWork
+        label: 홈페이지 추천 Work
+        type: reference
+        options: { collection: work, multiple: true, max: 6, search: "title,client,category", value: "{name}", label: "{title}" }
+      - name: featuredInsights
+        label: 홈페이지 추천 인사이트
+        type: reference
+        description: 선택한 순서대로 최대 3개를 홈에 표시합니다. 비공개 글은 자동 제외됩니다.
+        options: { collection: insights, multiple: true, max: 6, search: "title,category", value: "{name}", label: "{title}" }

@@ -1,0 +1,19 @@
+---
+import { getSiteSettings } from '../lib/content';
+const settings = await getSiteSettings();
+const { showInvitation = true } = Astro.props;
+---
+<footer class="studio-footer">
+  {showInvitation && <div class="contact-invitation">
+    <div class="studio-width contact-invitation__inner">
+      <div><p>다음 프로젝트</p><h2>어디서 시작할지 막막해도,<br />함께 이야기해요.</h2></div>
+      <div class="contact-invitation__action"><p>만들고 싶은 것과 지금의 고민을 들려주세요.</p><a class="solid-link" href="/contact">프로젝트 문의하기 <span aria-hidden="true">↗</span></a></div>
+    </div>
+  </div>}
+  <div class="studio-width footer-information">
+    <div class="footer-identity"><a href="/" aria-label="원디자인스튜디오 홈"><img src="/brand/wds-logo-black.png" width="55" height="56" alt="" /><span>원디자인스튜디오</span></a><p>브랜드 · UX/UI · 웹사이트</p></div>
+    <div class="footer-address"><a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a>{settings.contactPhone && <a href={`tel:${settings.contactPhone.replace(/[^+\d]/g, '')}`}>{settings.contactPhone}</a>}</div>
+    <nav aria-label="하단 메뉴"><a href="/about">스튜디오 소개</a><a href="/services">서비스</a><a href="/insights">인사이트</a><a href="/privacy">개인정보 처리방침</a></nav>
+    <p class="footer-copyright">© {new Date().getFullYear()} WON DESIGN STUDIO</p>
+  </div>
+</footer>

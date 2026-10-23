@@ -1,0 +1,36 @@
+---
+const { currentPath = '/', home = false } = Astro.props;
+const nav = home ? [['/work', 'WORK'], ['/about', 'STUDIO'], ['/insights', 'INSIGHTS']] : [['/work', '프로젝트'], ['/services', '서비스'], ['/about', '스튜디오'], ['/insights', '인사이트']];
+const active = (href: string) => currentPath.startsWith(href);
+---
+<a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
+<header class:list={['site-header', { 'site-header--immersive': home }]} data-header>
+  <a class="brand" href="/" aria-label="원디자인스튜디오 홈">
+    {!home && <img src="/brand/wds-logo-black.png" width="55" height="56" alt="" />}
+    <span>WON DESIGN STUDIO</span>
+  </a>
+  <nav class="desktop-nav" aria-label="주요 메뉴">
+    {nav.map(([href, label]) => <a href={href} aria-current={active(href) ? 'page' : undefined}>{label}</a>)}
+    <a class="nav-contact" href="/contact">{home ? '문의' : '프로젝트 문의'} <img src="/icons/arrow-up-right.svg" alt="" width="20" height="20" /></a>
+  </nav>
+  <details class="mobile-nav">
+    <summary aria-label="메뉴 열기">{home ? <><b class="menu-open-label">MENU</b><b class="menu-close-label">CLOSE</b></> : <><span></span><span></span></>}</summary>
+    <nav aria-label="모바일 메뉴">
+      {nav.map(([href, label]) => <a href={href} aria-current={active(href) ? 'page' : undefined}>{label}</a>)}
+      <a href="/contact">프로젝트 문의 ↗</a>
+    </nav>
+  </details>
+</header>
+<script>
+  const menu = document.querySelector<HTMLDetailsElement>('.mobile-nav');
+  const toggle = menu?.querySelector('summary');
+  menu?.addEventListener('toggle', () => toggle?.setAttribute('aria-label', menu.open ? '메뉴 닫기' : '메뉴 열기'));
+  menu?.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menu.open) { menu.open = false; toggle?.focus(); }
+  });
+  document.addEventListener('click', (event) => {
+    if (menu?.open && event.target instanceof Node && !menu.contains(event.target)) menu.open = false;
+  });
+  const desktop = window.matchMedia('(min-width: 901px)');
+  desktop.addEventListener('change', () => { if (desktop.matches && menu) menu.open = false; });
+</script>

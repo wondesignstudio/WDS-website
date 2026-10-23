@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSiteSettings, getPublishedServices } from '../lib/content';
+const settings = await getSiteSettings();
+const services = await getPublishedServices();
+const accessKey = (import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY ?? '').trim();
+---
+<BaseLayout title="Contact" description="원디자인스튜디오에 웹사이트와 디지털 제품 프로젝트를 문의하세요.">
+  <main id="main-content">
+    <section class="section shell contact-layout">
+      <div class="contact-intro" data-hero-reveal>
+        <p class="eyebrow">프로젝트 문의</p>
+        <h1>프로젝트 이야기를<br />들려주세요.</h1>
+        <p>만들고 싶은 서비스, 바꾸고 싶은 사이트, 아직 정리 중인 아이디어도 좋습니다. 현재 상황과 희망 일정을 알려주세요.</p>
+        <p><a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a>{settings.contactPhone && <><br /><a href={`tel:${settings.contactPhone.replace(/-/g, '')}`}>{settings.contactPhone}</a></>}</p>
+      </div>
+
+      <form class="contact-form" id="project-form" action="https://api.web3forms.com/submit" method="POST" novalidate data-access-ready={Boolean(accessKey)}>
+        {!accessKey && <p class="form-connection-note field--wide">문의 폼의 수신 연결을 준비하고 있습니다. 지금은 <a href={`mailto:${settings.contactEmail}`}>이메일로 문의해 주세요.</a></p>}
+        <input type="hidden" name="access_key" value={accessKey} />
+        <input type="hidden" name="subject" value="[WDS 문의] 새 프로젝트 상담" />
+        <input type="hidden" name="from_name" value="Won Design Studio Website" />
+        <input type="hidden" name="redirect" value="https://wondesign.studio/contact?submitted=1" />
+        <input class="hp-field" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+        <div class="field"><label for="company">회사명 <span aria-hidden="true">*</span></label><input id="company" name="company" autocomplete="organization" required maxlength="80" /></div>
+        <div class="field"><label for="name">담당자명 <span aria-hidden="true">*</span></label><input id="name" name="name" autocomplete="name" required maxlength="60" /></div>
+        <div class="field field--wide"><label for="email">업무 이메일 <span aria-hidden="true">*</span></label><input id="email" name="email" type="email" autocomplete="email" required maxlength="120" /></div>
+        <div class="field"><label for="project-type">프로젝트 유형 <span aria-hidden="true">*</span></label><select id="project-type" name="project_type" required><option value="">선택해 주세요</option>{services.map((service) => <option>{service.data.title}</option>)}<option>기타</option></select></div>
+        <div class="field"><label for="budget">예산 범위</label><select id="budget" name="budget"><option value="">미정 / 상담 필요</option><option>2천만 원 미만</option><option>2천만–5천만 원</option><option>5천만–1억 원</option><option>1억 원 이상</option></select></div>
+        <div class="field field--wide"><label for="message">현재 문제와 추진 배경 <span aria-hidden="true">*</span></label><textarea id="message" name="message" required minlength="20" maxlength="3000" placeholder="현재 상황, 해결하려는 문제와 희망 일정을 알려주세요."></textarea></div>
+        <label class="consent"><input type="checkbox" name="privacy_consent" required /><span><a href="/privacy" target="_blank" rel="noopener">개인정보 처리방침</a>과 Web3Forms를 통한 외부 전송 안내를 확인했으며 문의 처리에 동의합니다.</span></label>
+        <div class="form-actions"><button class="button button--accent" type="submit">상담 요청 보내기</button><p class="form-status" role="status" aria-live="polite"></p></div>
+      </form>
+    </section>
+  </main>
+  <script>
+    import { bindContactForm } from '../lib/contact-form.mjs';
+    const form = document.querySelector<HTMLFormElement>('#project-form');
+    if (form) bindContactForm(form);
+  </script>
+</BaseLayout>

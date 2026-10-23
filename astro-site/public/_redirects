@@ -1,0 +1,9 @@
+# Only formerly public articles are mapped. Draft slugs remain unavailable.
+/journal /insights 301
+/journal/ /insights 301
+/journal/before-redesign /insights/before-redesign 301
+/journal/before-redesign/ /insights/before-redesign 301
+/journal/portfolio-is-evidence /insights/portfolio-is-evidence 301
+/journal/portfolio-is-evidence/ /insights/portfolio-is-evidence 301
+/lab /insights 301
+/lab/ /insights 301

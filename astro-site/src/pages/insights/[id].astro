@@ -1,0 +1,39 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import InsightFeedCard from '../../components/InsightFeedCard.astro';
+import { getPublishedInsights, getPublishedWork, selectByIds } from '../../lib/content';
+import { insightImage } from '../../lib/insight-presentation';
+import '../../styles/insight-feed.css';
+export async function getStaticPaths() {
+  return (await getPublishedInsights()).map(entry => ({ params: { id: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content, headings } = await render(entry);
+const date = d.publishedAt.toISOString().slice(0,10);
+const work = await getPublishedWork();
+const relatedWork = selectByIds(work, d.relatedWork);
+const picture = insightImage(entry);
+const sections = headings.filter(heading => heading.depth === 2);
+const more = (await getPublishedInsights()).filter(item => item.id !== entry.id).slice(0,2);
+---
+<BaseLayout title={d.title} description={d.summary} image={d.cover}>
+  <main id="main-content" class="insight-reader">
+    <a class="reader-back" href="/insights">인사이트 목록으로</a>
+    <header class="reader-heading">
+      <p class="feed-category">{d.category}{d.series && <span class="reader-series">{d.series}</span>}</p>
+      <h1>{d.title}</h1><p class="reader-summary">{d.summary}</p>
+      <div class="reader-byline"><span>{d.author}</span><time datetime={date}>{date.replaceAll('-','.')}</time><span>{d.readingMinutes}분 읽기</span></div>
+    </header>
+    {picture && <figure class="reader-cover"><img src={picture.src} alt={picture.alt} width="1600" height="1000" /></figure>}
+    <div class="reader-content">
+      {sections.length >= 3 && <details class="reader-contents"><summary>이 글에서 다루는 내용</summary><nav aria-label="글 목차"><ol>{sections.map(section => <li><a href={`#${section.slug}`}>{section.text}</a></li>)}</ol></nav></details>}
+      <article class="reader-body"><Content /></article>
+      <div class="reader-signoff"><p>{d.author}</p><span>브랜드와 디지털 경험을 만들며 발견한 생각을 기록합니다.</span></div>
+      {relatedWork.length > 0 && <aside class="reader-work"><h2>함께 볼 프로젝트</h2>{relatedWork.map(project => <a href={`/work/${project.id}`}><span>{project.data.title}</span><span>{project.data.category}<img src="/icons/arrow-up-right.svg" width="18" height="18" alt="" aria-hidden="true" /></span></a>)}</aside>}
+      <a class="reader-back reader-back--bottom" href="/insights">모든 인사이트 보기</a>
+    </div>
+    {more.length > 0 && <section class="reader-next"><header class="feed-section-heading"><h2>이 글도 읽어보세요</h2></header>{more.map(item => <InsightFeedCard entry={item} />)}</section>}
+  </main>
+</BaseLayout>
