@@ -2,7 +2,7 @@
 import { getSiteSettings } from '../lib/content';
 const settings = await getSiteSettings();
 const { showInvitation = true } = Astro.props;
-const footerEmail = Astro.url.pathname === '/' ? 'contact@wondesign.studio' : settings.contactEmail;
+const footerEmail = settings.contactEmail;
 ---
 <footer class="studio-footer">
   {showInvitation && <div class="contact-invitation">
